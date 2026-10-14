@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "idc",
+	"version": "${version}",
+	"name": "Immersive Day Counter",
+	"description": "Adds an on-screen day counter with announcements, sounds and advancements for days 1, 100 and 1000.",
+	"authors": [
+		"3C Team"
+	],
+	"contact": {
+		"homepage": "https://www.curseforge.com/minecraft/mc-mods/immersive-day-counter",
+		"issues": "https://github.com/3ColumnsC/ImmersiveDayCounter/issues",
+		"sources": "https://github.com/3ColumnsC/ImmersiveDayCounter"
+	},
+	"license": "MIT",
+	"icon": "assets/idc/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.threecolumnsstudio.immersivedaycounter.fabric.IDCFabric"
+		],
+		"client": [
+			"com.threecolumnsstudio.immersivedaycounter.fabric.IDCFabricClient"
+		],
+		"modmenu": [
+			"com.threecolumnsstudio.immersivedaycounter.fabric.screen.IDCModMenu"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"modmenu": "*"
+	}
+}

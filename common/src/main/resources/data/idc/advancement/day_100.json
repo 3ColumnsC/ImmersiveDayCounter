@@ -1,0 +1,27 @@
+{
+  "parent": "idc:day_1",
+  "display": {
+    "icon": {
+      "id": "minecraft:golden_apple"
+    },
+    "title": {
+      "translate": "advancements.idc.day_100.title"
+    },
+    "description": {
+      "translate": "advancements.idc.day_100.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "day": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "day"
+    ]
+  ]
+}
