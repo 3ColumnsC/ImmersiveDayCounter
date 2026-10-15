@@ -30,6 +30,8 @@ The day is resolved live from the world clock, so nothing is stored and it alway
 
 Note: this counter is not the same as F3. F3 shows the day starting at 0, while this mod counts the first day as Day 1. That means the mod is always F3's Day plus 1.
 
+**Version 1.21.11 or minor: on these versions the day comes straight from the world time, so `/time set` (day, noon, night, midnight) resets the counter to Day 1. To set the day, use `/idc set day n`. (OP needed)**
+
 ### 🖥️ Display styles
 
 Three independent styles, each fully configurable:
