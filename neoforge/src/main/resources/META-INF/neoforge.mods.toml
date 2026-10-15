@@ -16,13 +16,13 @@ displayURL = "https://www.curseforge.com/minecraft/mc-mods/immersive-day-counter
 [[dependencies.idc]]
 modId = "neoforge"
 type = "required"
-versionRange = "[26.3,)"
+versionRange = "[26.2,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.idc]]
 modId = "minecraft"
 type = "required"
-versionRange = "[26.3,)"
+versionRange = "[26.2,)"
 ordering = "NONE"
 side = "BOTH"
