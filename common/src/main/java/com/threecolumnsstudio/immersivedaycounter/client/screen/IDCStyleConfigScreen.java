@@ -3,7 +3,7 @@ package com.threecolumnsstudio.immersivedaycounter.client.screen;
 import com.threecolumnsstudio.immersivedaycounter.config.IDCConfig;
 import java.util.Locale;
 import java.util.function.Consumer;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.ScrollableLayout;
@@ -193,7 +193,8 @@ public final class IDCStyleConfigScreen extends Screen {
         if (this.tabNavigationBar == null) {
             return;
         }
-        this.tabNavigationBar.updateWidth(this.width);
+        this.tabNavigationBar.setWidth(this.width);
+        this.tabNavigationBar.arrangeElements();
         int headerBottom = this.tabNavigationBar.getRectangle().bottom();
         ScreenRectangle tabArea = new ScreenRectangle(0, headerBottom, this.width,
             this.height - this.layout.getFooterHeight() - headerBottom);
@@ -208,15 +209,15 @@ public final class IDCStyleConfigScreen extends Screen {
     }
 
     @Override
-    protected void extractMenuBackground(GuiGraphicsExtractor graphics) {
+    protected void renderMenuBackground(GuiGraphics graphics) {
         graphics.blit(RenderPipelines.GUI_TEXTURED, CreateWorldScreen.TAB_HEADER_BACKGROUND,
             0, 0, 0.0F, 0.0F, this.width, this.layout.getHeaderHeight(), 16, 16);
-        this.extractMenuBackground(graphics, 0, this.layout.getHeaderHeight(), this.width, this.height);
+        this.renderMenuBackground(graphics, 0, this.layout.getHeaderHeight(), this.width, this.height);
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
         graphics.blit(RenderPipelines.GUI_TEXTURED, Screen.FOOTER_SEPARATOR,
             0, this.height - this.layout.getFooterHeight() - 2, 0.0F, 0.0F, this.width, 2, 32, 2);
     }

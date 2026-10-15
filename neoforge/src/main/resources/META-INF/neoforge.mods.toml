@@ -15,13 +15,13 @@ logoFile = "assets/idc/icon.png"
 [[dependencies.idc]]
 modId = "neoforge"
 type = "required"
-versionRange = "[26.1.2,)"
+versionRange = "[21.11,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.idc]]
 modId = "minecraft"
 type = "required"
-versionRange = "[26.1.2,)"
+versionRange = "[1.21.11,)"
 ordering = "NONE"
 side = "BOTH"

@@ -1,5 +1,5 @@
 plugins {
-    id 'net.fabricmc.fabric-loom' version "${fabric_loom_version}"
+    id 'net.fabricmc.fabric-loom-remap' version "${fabric_loom_version}"
 }
 
 loom {
@@ -8,13 +8,14 @@ loom {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
+        languageVersion = JavaLanguageVersion.of(21)
     }
     withSourcesJar()
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.officialMojangMappings()
     // Mixin API for common mixins (provided by each loader at runtime)
     compileOnly "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
     compileOnly "net.fabricmc:sponge-mixin:0.17.3+mixin.0.8.7"

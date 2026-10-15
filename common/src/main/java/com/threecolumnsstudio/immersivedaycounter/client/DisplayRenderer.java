@@ -5,7 +5,7 @@ import java.text.NumberFormat;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 
@@ -32,7 +32,7 @@ public final class DisplayRenderer {
         announceStartNanos = NO_ANNOUNCE;
     }
 
-    public static void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
+    public static void render(GuiGraphics graphics, DeltaTracker deltaTracker) {
         if (!ClientDayState.isKnown()) {
             return;
         }
@@ -46,7 +46,7 @@ public final class DisplayRenderer {
         renderCenter(graphics, font, config.display.center, day, elapsed);
     }
 
-    private static void renderCenter(GuiGraphicsExtractor graphics, Font font, IDCConfig.Style style, long day, double elapsed) {
+    private static void renderCenter(GuiGraphics graphics, Font font, IDCConfig.Style style, long day, double elapsed) {
         if (!style.enabled || !isActive(style, elapsed)) {
             return;
         }
@@ -91,18 +91,18 @@ public final class DisplayRenderer {
 
         graphics.pose().pushMatrix();
         graphics.pose().scale(titleScale, titleScale);
-        graphics.text(font, title, titleX, titleY, ARGB.color(alpha, textColor(style, day)), shadow);
+        graphics.drawString(font, title, titleX, titleY, ARGB.color(alpha, textColor(style, day)), shadow);
         graphics.pose().popMatrix();
 
         graphics.pose().pushMatrix();
         graphics.pose().scale(numberScale, numberScale);
-        graphics.text(font, dayLine, numberX, numberY, ARGB.color(alpha, textColor(style, day)), shadow);
+        graphics.drawString(font, dayLine, numberX, numberY, ARGB.color(alpha, textColor(style, day)), shadow);
         graphics.pose().popMatrix();
 
         graphics.pose().popMatrix();
     }
 
-    private static void renderHotbar(GuiGraphicsExtractor graphics, Font font, IDCConfig.Style style, long day, double elapsed) {
+    private static void renderHotbar(GuiGraphics graphics, Font font, IDCConfig.Style style, long day, double elapsed) {
         if (!style.enabled || !isActive(style, elapsed)) {
             return;
         }
@@ -119,10 +119,10 @@ public final class DisplayRenderer {
             graphics.fill(x - PANEL_PADDING, y - PANEL_PADDING,
                     x + width - FONT_TRAILING_SPACING + PANEL_PADDING, y + font.lineHeight - FONT_LINE_SLACK + PANEL_PADDING, panelColor(alpha));
         }
-        graphics.text(font, text, x, y, ARGB.color(alpha, textColor(style, day)), !background);
+        graphics.drawString(font, text, x, y, ARGB.color(alpha, textColor(style, day)), !background);
     }
 
-    private static void renderCorner(GuiGraphicsExtractor graphics, Font font, IDCConfig.CornerStyle style, long day, double elapsed) {
+    private static void renderCorner(GuiGraphics graphics, Font font, IDCConfig.CornerStyle style, long day, double elapsed) {
         if (!style.enabled || !isActive(style, elapsed)) {
             return;
         }
@@ -142,7 +142,7 @@ public final class DisplayRenderer {
             graphics.fill(x - PANEL_PADDING, y - PANEL_PADDING,
                     x + width - FONT_TRAILING_SPACING + PANEL_PADDING, y + font.lineHeight - FONT_LINE_SLACK + PANEL_PADDING, panelColor(alpha));
         }
-        graphics.text(font, text, x, y, ARGB.color(alpha, textColor(style, day)), !background);
+        graphics.drawString(font, text, x, y, ARGB.color(alpha, textColor(style, day)), !background);
     }
 
     private static boolean hasBackground(IDCConfig.Style style) {

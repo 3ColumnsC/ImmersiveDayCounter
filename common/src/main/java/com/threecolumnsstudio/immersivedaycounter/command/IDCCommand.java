@@ -7,11 +7,7 @@ import com.threecolumnsstudio.immersivedaycounter.day.DayClock;
 import com.threecolumnsstudio.immersivedaycounter.day.DayMilestones;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.clock.WorldClock;
-import net.minecraft.world.clock.WorldClocks;
 
 public final class IDCCommand {
 
@@ -37,9 +33,7 @@ public final class IDCCommand {
     private static int setDay(CommandContext<CommandSourceStack> context) {
         long day = LongArgumentType.getLong(context, "day");
         CommandSourceStack source = context.getSource();
-        MinecraftServer server = source.getServer();
-        Holder<WorldClock> clock = server.registryAccess().getOrThrow(WorldClocks.OVERWORLD);
-        server.clockManager().setTotalTicks(clock, (day - 1L) * DayClock.TICKS_PER_DAY);
+        source.getServer().overworld().setDayTime((day - 1L) * DayClock.TICKS_PER_DAY);
         source.sendSuccess(() -> Component.translatable("commands.idc.set.day", day), true);
         return (int) Math.min(day, Integer.MAX_VALUE);
     }

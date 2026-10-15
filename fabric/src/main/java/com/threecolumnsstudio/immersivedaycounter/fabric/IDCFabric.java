@@ -16,7 +16,7 @@ public final class IDCFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        PayloadTypeRegistry.clientboundPlay().register(DayPayload.TYPE, DayPayload.STREAM_CODEC);
+        PayloadTypeRegistry.playS2C().register(DayPayload.TYPE, DayPayload.STREAM_CODEC);
         IDCNetwork.setSender(ServerPlayNetworking::send);
 
         ServerLifecycleEvents.SERVER_STARTED.register(DayTracker::onServerStarted);

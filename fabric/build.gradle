@@ -1,5 +1,5 @@
 plugins {
-    id 'net.fabricmc.fabric-loom' version "${fabric_loom_version}"
+    id 'net.fabricmc.fabric-loom-remap' version "${fabric_loom_version}"
     id 'maven-publish'
 }
 
@@ -14,15 +14,9 @@ base {
     archivesName = "idc-fabric"
 }
 
-fabricApi {
-    configureDataGeneration {
-        client = true
-    }
-}
-
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
+        languageVersion = JavaLanguageVersion.of(21)
     }
     withSourcesJar()
 }
@@ -37,13 +31,16 @@ sourceSets {
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.officialMojangMappings()
 
-    implementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
-    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-    implementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
     // Common classes
-    implementation project(':common')
+    implementation project(path: ':common', configuration: 'namedElements')
+
+    modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+    modLocalRuntime "com.terraformersmc:modmenu:${project.modmenu_version}"
 }
 
 processResources {

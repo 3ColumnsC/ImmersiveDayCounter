@@ -40,7 +40,6 @@ final class ScrollConfigTab implements Tab {
         this.content.arrangeElements();
         int viewportHeight = area.height() - CONTENT_TOP_PADDING - CONTENT_BOTTOM_PADDING;
         this.content.setMaxHeight(viewportHeight);
-        this.content.setMinHeight(viewportHeight);
         this.content.arrangeElements();
         int centeredX = area.left() + (area.width() - this.content.getWidth()) / 2;
         this.content.setPosition(centeredX, area.top() + CONTENT_TOP_PADDING);
