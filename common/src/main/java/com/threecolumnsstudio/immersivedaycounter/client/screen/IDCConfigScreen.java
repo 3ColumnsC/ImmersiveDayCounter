@@ -5,8 +5,8 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.ScrollableLayout;
-import net.minecraft.client.gui.components.tabs.MenuTabBar;
 import net.minecraft.client.gui.components.tabs.TabManager;
+import net.minecraft.client.gui.components.tabs.TabNavigationBar;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
@@ -29,7 +29,7 @@ public final class IDCConfigScreen extends Screen {
     private final HeaderAndFooterLayout layout;
     private final TabManager tabManager;
 
-    private MenuTabBar tabNavigationBar;
+    private TabNavigationBar tabNavigationBar;
     private ScrollableLayout scrollArea;
 
     private boolean soundsEnabled;
@@ -46,8 +46,8 @@ public final class IDCConfigScreen extends Screen {
     protected void init() {
         this.scrollArea = new ScrollableLayout(this.minecraft, buildContentGrid(), INITIAL_SCROLL_HEIGHT);
 
-        this.tabNavigationBar = MenuTabBar.builder(this.tabManager, this.width)
-            .addTab(new ScrollConfigTab(Component.translatable("idc.config.tab.general"), this.scrollArea))
+        this.tabNavigationBar = TabNavigationBar.builder(this.tabManager, this.width)
+            .addTabs(new ScrollConfigTab(Component.translatable("idc.config.tab.general"), this.scrollArea))
             .build();
         this.addRenderableWidget(this.tabNavigationBar);
 
@@ -81,7 +81,7 @@ public final class IDCConfigScreen extends Screen {
 
     private Button styleButton(String translationKey, IDCStyleConfigScreen.StyleTarget target) {
         return Button.builder(Component.translatable(translationKey),
-                button -> this.minecraft.gui.setScreen(new IDCStyleConfigScreen(this, target)))
+                button -> this.minecraft.setScreen(new IDCStyleConfigScreen(this, target)))
             .width(WIDGET_WIDTH)
             .build();
     }
@@ -89,7 +89,7 @@ public final class IDCConfigScreen extends Screen {
     private void apply() {
         IDCConfig.get().sounds.enabled = this.soundsEnabled;
         IDCConfig.save();
-        this.minecraft.gui.setScreen(this.parent);
+        this.minecraft.setScreen(this.parent);
     }
 
     @Override
@@ -97,7 +97,7 @@ public final class IDCConfigScreen extends Screen {
         if (this.tabNavigationBar == null) {
             return;
         }
-        this.tabNavigationBar.arrangeElements(this.width);
+        this.tabNavigationBar.updateWidth(this.width);
         int headerBottom = this.tabNavigationBar.getRectangle().bottom();
         ScreenRectangle tabArea = new ScreenRectangle(0, headerBottom, this.width,
             this.height - this.layout.getFooterHeight() - headerBottom);
@@ -108,7 +108,7 @@ public final class IDCConfigScreen extends Screen {
 
     @Override
     public void onClose() {
-        this.minecraft.gui.setScreen(this.parent);
+        this.minecraft.setScreen(this.parent);
     }
 
     @Override

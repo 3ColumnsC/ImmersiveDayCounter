@@ -1,7 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[4,)"
 license = "MIT"
-issueTrackerURL = "https://github.com/3ColumnsC/ImmersiveDayCounter/issues"
 
 [[mods]]
 modId = "idc"
@@ -9,20 +8,20 @@ version = "${file.jarVersion}"
 displayName = "Immersive Day Counter"
 authors = "3C Team"
 description = "Adds an on-screen day counter with announcements, sounds and advancements for days 1, 100 and 1000."
-iconFile = "assets/idc/icon.png"
-bannerFile = "assets/idc/icon.png"
+
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/immersive-day-counter"
+logoFile = "assets/idc/icon.png"
 
 [[dependencies.idc]]
 modId = "neoforge"
 type = "required"
-versionRange = "[26.2,)"
+versionRange = "[26.1.2,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.idc]]
 modId = "minecraft"
 type = "required"
-versionRange = "[26.2,)"
+versionRange = "[26.1.2,)"
 ordering = "NONE"
 side = "BOTH"

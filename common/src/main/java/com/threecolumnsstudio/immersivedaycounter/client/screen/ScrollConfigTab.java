@@ -4,7 +4,6 @@ import java.util.function.Consumer;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ScrollableLayout;
 import net.minecraft.client.gui.components.tabs.Tab;
-import net.minecraft.client.gui.layouts.Layout;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 
@@ -34,11 +33,6 @@ final class ScrollConfigTab implements Tab {
     @Override
     public void visitChildren(Consumer<AbstractWidget> consumer) {
         this.content.visitWidgets(consumer);
-    }
-
-    @Override
-    public Layout getLayout() {
-        return this.content;
     }
 
     @Override
