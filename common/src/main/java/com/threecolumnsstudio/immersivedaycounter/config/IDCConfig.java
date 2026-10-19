@@ -110,6 +110,7 @@ public final class IDCConfig {
         if (this.display == null) {
             this.display = new Display();
         }
+        this.sounds.sanitize();
         this.display.sanitize();
     }
 
@@ -146,24 +147,55 @@ public final class IDCConfig {
         BOTTOM_LEFT
     }
 
+    public enum DaySound {
+        @SerializedName("click")
+        CLICK,
+        @SerializedName("experience")
+        EXPERIENCE,
+        @SerializedName("level_up")
+        LEVEL_UP,
+        @SerializedName("bell")
+        BELL,
+        @SerializedName("pickup")
+        PICKUP,
+        @SerializedName("pling")
+        PLING,
+        @SerializedName("creeper")
+        CREEPER
+    }
+
+    public enum DayTimeFormat {
+        @SerializedName("24h")
+        H24,
+        @SerializedName("12h")
+        H12
+    }
+
     public static final class Sounds {
         public boolean enabled = true;
+        public DaySound sound = DaySound.PLING;
+
+        private void sanitize() {
+            if (this.sound == null) {
+                this.sound = DaySound.PLING;
+            }
+        }
     }
 
     public static final class Display {
-        public Style center = Style.create(true, false, false);
-        public Style hotbar = Style.create(true, true, false);
-        public CornerStyle corner = CornerStyle.create(false, true, true);
+        public Style center = Style.create(true, false, false, false);
+        public Style hotbar = Style.create(true, true, false, true);
+        public CornerStyle corner = CornerStyle.create(false, true, true, false);
 
         private void sanitize() {
             if (this.center == null) {
-                this.center = Style.create(true, false, false);
+                this.center = Style.create(true, false, false, false);
             }
             if (this.hotbar == null) {
-                this.hotbar = Style.create(true, true, false);
+                this.hotbar = Style.create(true, true, false, true);
             }
             if (this.corner == null) {
-                this.corner = CornerStyle.create(false, true, true);
+                this.corner = CornerStyle.create(false, true, true, false);
             }
             this.center.sanitize();
             this.hotbar.sanitize();
@@ -180,16 +212,19 @@ public final class IDCConfig {
         public String textColor = "#FFFFFF";
         public boolean specialDayText = true;
         public String specialDayTextColor = "#FF7A5E";
+        public boolean showDayTime;
+        public DayTimeFormat dayTimeFormat = DayTimeFormat.H24;
         public transient int textColorRgb = DEFAULT_TEXT_COLOR;
         public transient int specialDayTextColorRgb = DEFAULT_SPECIAL_DAY_TEXT_COLOR;
 
-        private static Style create(boolean enabled, boolean permanent, boolean background) {
+        private static Style create(boolean enabled, boolean permanent, boolean background, boolean showDayTime) {
             Style style = new Style();
             style.enabled = enabled;
             style.permanent = permanent;
             style.durationSeconds = 3.0D;
             style.fadeSeconds = 0.6D;
             style.background = background;
+            style.showDayTime = showDayTime;
             return style;
         }
 
@@ -210,19 +245,23 @@ public final class IDCConfig {
             this.textColor = formatColor(this.textColorRgb);
             this.specialDayTextColorRgb = parseColor(this.specialDayTextColor, DEFAULT_SPECIAL_DAY_TEXT_COLOR);
             this.specialDayTextColor = formatColor(this.specialDayTextColorRgb);
+            if (this.dayTimeFormat == null) {
+                this.dayTimeFormat = DayTimeFormat.H24;
+            }
         }
     }
 
     public static final class CornerStyle extends Style {
         public Position position = Position.TOP_LEFT;
 
-        private static CornerStyle create(boolean enabled, boolean permanent, boolean background) {
+        private static CornerStyle create(boolean enabled, boolean permanent, boolean background, boolean showDayTime) {
             CornerStyle style = new CornerStyle();
             style.enabled = enabled;
             style.permanent = permanent;
             style.durationSeconds = 3.0D;
             style.fadeSeconds = 0.6D;
             style.background = background;
+            style.showDayTime = showDayTime;
             return style;
         }
 

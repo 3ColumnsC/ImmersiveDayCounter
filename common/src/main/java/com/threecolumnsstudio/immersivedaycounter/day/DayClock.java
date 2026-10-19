@@ -20,4 +20,11 @@ public final class DayClock {
                 .map(timeline -> (long) timeline.value().getPeriodCount(level.clockManager()))
                 .orElseGet(() -> level.getOverworldClockTime() / TICKS_PER_DAY);
     }
+
+    public static long currentDayTicks(Level level) {
+        return level.registryAccess()
+                .get(Timelines.OVERWORLD_DAY)
+                .map(timeline -> timeline.value().getCurrentTicks(level.clockManager()))
+                .orElseGet(() -> level.getOverworldClockTime() % TICKS_PER_DAY);
+    }
 }

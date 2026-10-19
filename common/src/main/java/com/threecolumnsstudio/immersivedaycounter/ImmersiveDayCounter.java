@@ -17,4 +17,8 @@ public final class ImmersiveDayCounter {
     public static Identifier id(String path) {
         return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
+
+    public static void logInitialized() {
+        LOGGER.info("{} initialized", MOD_NAME);
+    }
 }

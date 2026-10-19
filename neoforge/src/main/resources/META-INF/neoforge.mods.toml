@@ -8,10 +8,13 @@ modId = "idc"
 version = "${file.jarVersion}"
 displayName = "Immersive Day Counter"
 authors = "3C Team"
-description = "Adds an on-screen day counter with announcements, sounds and advancements for days 1, 100 and 1000."
+description = "Adds an on-screen day counter with announcements, sounds and advancements for days 1, 100, 1000 and 10000."
 iconFile = "assets/idc/icon.png"
 bannerFile = "assets/idc/icon.png"
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/immersive-day-counter"
+
+[[mixins]]
+config = "idc.mixins.json"
 
 [[dependencies.idc]]
 modId = "neoforge"
