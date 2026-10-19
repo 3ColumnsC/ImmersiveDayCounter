@@ -4,9 +4,9 @@ A lightweight mod that tracks the in-game day and announces every new day with a
 
 ---
 
-<img src="https://res.cloudinary.com/dbtdewiqk/image/upload/v1791990272/1_f451cq.jpg" alt="Immersive Day Counter: Fully Configurable" width="900">
-<img src="https://res.cloudinary.com/dbtdewiqk/image/upload/v1791990278/2_icqm6b.jpg" alt="Immersive Day Counter: Fully Configurable" width="900">
-<img src="https://res.cloudinary.com/dbtdewiqk/image/upload/v1791990279/3_fsx02w.jpg" alt="Immersive Day Counter: Config Screen" width="900">
+<img src="https://res.cloudinary.com/dbtdewiqk/image/upload/v1792324420/1_y2g1dh.jpg" alt="Immersive Day Counter: Fully Configurable" width="900">
+<img src="https://res.cloudinary.com/dbtdewiqk/image/upload/v1792324420/2_tra7fv.jpg" alt="Immersive Day Counter: Fully Configurable" width="900">
+<img src="https://res.cloudinary.com/dbtdewiqk/image/upload/v1792324420/3_twi0wo.jpg" alt="Immersive Day Counter: Config Screen" width="900">
 
 ---
 
@@ -48,11 +48,22 @@ A text color per style, plus a special color on every 100th day (100, 200, 300, 
 
 ### 🏆 Advancements
 
-Days 1, 100 and 1000 are granted as challenge advancements.
+Days 1, 100, 1000 and 10000 are granted as challenge advancements.
 
 ### 🔊 Sounds
 
-A soft click plays on each day change and can be toggled off.
+A sound plays on each day change. It can be toggled off.
+- Note-block pling (default)
+- Creeper hiss
+- Click
+- Item pickup sound
+- Experience orb
+- Experience level-up
+- Short bell
+
+### ⏰ In-game time
+
+Show the current in-game time next to the day. It is per display with a 24-hour or 12-hour (AM/PM) format.
 
 ### ⌨️ Command
 
@@ -64,7 +75,7 @@ A soft click plays on each day change and can be toggled off.
 
 ## ⚙️ Configuration
 
-The easiest way is in game: open **Mod Menu** (Fabric) or the **Config** button in the mods list (NeoForge). The **General** screen has the sounds toggle and one button per display style. No game restart needed.
+The easiest way is in game: open **Mod Menu (Fabric)** or the **Config** button in the mods list (NeoForge). The **General** screen has the sound settings and one button per display style. No game restart needed.
 
 If you prefer editing the file manually:
 
@@ -74,11 +85,11 @@ config/immersive-day-counter.json
 
 ```json
 {
-  "sounds": { "enabled": true },
+  "sounds": { "enabled": true, "sound": "pling" },
   "display": {
-    "center": { "enabled": true,  "permanent": false, "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": false, "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E" },
-    "hotbar": { "enabled": true,  "permanent": true,  "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": false, "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E" },
-    "corner": { "enabled": false, "permanent": true,  "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": true,  "position": "top_left", "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E" }
+    "center": { "enabled": true,  "permanent": false, "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": false, "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E", "showDayTime": false, "dayTimeFormat": "24h" },
+    "hotbar": { "enabled": true,  "permanent": true,  "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": false, "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E", "showDayTime": true, "dayTimeFormat": "24h" },
+    "corner": { "enabled": false, "permanent": true,  "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": true,  "position": "top_left", "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E", "showDayTime": false, "dayTimeFormat": "24h" }
   }
 }
 ```
@@ -86,6 +97,7 @@ config/immersive-day-counter.json
 | Option | Values | Default | Description |
 |---|---|---|---|
 | `sounds.enabled` | `true` / `false` | `true` | Daily sound on each day change. Milestones use the vanilla advancement sound regardless. |
+| `sounds.sound` | `click` / `experience` / `level_up` / `bell` / `pickup` / `pling` / `creeper` | `pling` | Sound played when a new day starts. |
 | `enabled` | `true` / `false` | center and hotbar `true`, corner `false` | Show that style. |
 | `permanent` | `true` / `false` | hotbar and corner `true` | Permanent instead of timed. |
 | `durationSeconds` | 0.5 to 15.0 | `3.0` | How long a timed display stays. |
@@ -94,6 +106,8 @@ config/immersive-day-counter.json
 | `textColor` | `#RRGGBB` | `#FFFFFF` | Text color. |
 | `specialDayText` | `true` / `false` | `true` | Use the special color on every 100th day. |
 | `specialDayTextColor` | `#RRGGBB` | `#FF7A5E` | Special day color. |
+| `showDayTime` | `true` / `false` | hotbar `true`, center/corner `false` | Show the in-game time next to the day (per style). |
+| `dayTimeFormat` | `24h` / `12h` | `24h` | Time format (24-hour, or 12-hour with AM/PM). |
 | `corner.position` | `top_left` / `top_right` / `bottom_right` / `bottom_left` | `top_left` | Corner used by the Corner Display. |
 
 ---

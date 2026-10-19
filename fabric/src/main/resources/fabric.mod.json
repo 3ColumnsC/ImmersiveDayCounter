@@ -3,7 +3,7 @@
 	"id": "idc",
 	"version": "${version}",
 	"name": "Immersive Day Counter",
-	"description": "Adds an on-screen day counter with announcements, sounds and advancements for days 1, 100 and 1000.",
+	"description": "Adds an on-screen day counter with announcements, sounds and advancements for days 1, 100, 1000 and 10000.",
 	"authors": [
 		"3C Team"
 	],
@@ -26,6 +26,9 @@
 			"com.threecolumnsstudio.immersivedaycounter.fabric.screen.IDCModMenu"
 		]
 	},
+	"mixins": [
+		"idc.mixins.json"
+	],
 	"depends": {
 		"fabricloader": ">=0.19.5",
 		"minecraft": "~26.3",
