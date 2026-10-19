@@ -9,8 +9,9 @@ public final class DayMilestones {
     public static final long FIRST = 1L;
     public static final long CENTURY = 100L;
     public static final long MILLENNIUM = 1000L;
+    public static final long TEN_THOUSAND = 10000L;
 
-    public static final List<Long> DAYS = List.of(FIRST, CENTURY, MILLENNIUM);
+    public static final List<Long> DAYS = List.of(FIRST, CENTURY, MILLENNIUM, TEN_THOUSAND);
 
     private DayMilestones() {
     }

@@ -30,10 +30,12 @@ public final class IDCNeoForge {
         NeoForge.EVENT_BUS.addListener(this::onServerStarted);
         NeoForge.EVENT_BUS.addListener(this::onServerTick);
         NeoForge.EVENT_BUS.addListener(this::onPlayerJoin);
+
+        ImmersiveDayCounter.logInitialized();
     }
 
     private void registerPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar("1");
+        PayloadRegistrar registrar = event.registrar("1").optional();
         registrar.playToClient(DayPayload.TYPE, DayPayload.STREAM_CODEC,
                 (payload, context) -> context.enqueueWork(() -> ClientDayState.update(payload.day(), payload.announce())));
     }

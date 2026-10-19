@@ -1,5 +1,6 @@
 package com.threecolumnsstudio.immersivedaycounter.fabric;
 
+import com.threecolumnsstudio.immersivedaycounter.ImmersiveDayCounter;
 import com.threecolumnsstudio.immersivedaycounter.command.IDCCommand;
 import com.threecolumnsstudio.immersivedaycounter.network.DayPayload;
 import com.threecolumnsstudio.immersivedaycounter.network.IDCNetwork;
@@ -24,5 +25,7 @@ public final class IDCFabric implements ModInitializer {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> DayTracker.onPlayerJoin(handler.getPlayer()));
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> IDCCommand.register(dispatcher));
+
+        ImmersiveDayCounter.logInitialized();
     }
 }
