@@ -1,6 +1,8 @@
 package com.threecolumnsstudio.immersivedaycounter.client.screen;
 
+import com.threecolumnsstudio.immersivedaycounter.client.IDCSounds;
 import com.threecolumnsstudio.immersivedaycounter.config.IDCConfig;
+import java.util.Locale;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
@@ -33,6 +35,7 @@ public final class IDCConfigScreen extends Screen {
     private ScrollableLayout scrollArea;
 
     private boolean soundsEnabled;
+    private IDCConfig.DaySound daySound;
 
     public IDCConfigScreen(Screen parent) {
         super(Component.translatable("idc.config.title"));
@@ -40,6 +43,7 @@ public final class IDCConfigScreen extends Screen {
         this.layout = new HeaderAndFooterLayout(this);
         this.tabManager = new TabManager(this::addRenderableWidget, this::removeWidget);
         this.soundsEnabled = IDCConfig.get().sounds.enabled;
+        this.daySound = IDCConfig.get().sounds.sound;
     }
 
     @Override
@@ -72,6 +76,15 @@ public final class IDCConfigScreen extends Screen {
         rows.addChild(CycleButton.onOffBuilder(this.soundsEnabled)
             .create(0, 0, WIDGET_WIDTH, WIDGET_HEIGHT, Component.translatable("idc.config.sounds"),
                 (button, value) -> this.soundsEnabled = value));
+        rows.addChild(CycleButton.builder(
+                sound -> Component.translatable("idc.config.sound." + sound.name().toLowerCase(Locale.ROOT)),
+                this.daySound)
+            .withValues(IDCConfig.DaySound.values())
+            .create(0, 0, WIDGET_WIDTH, WIDGET_HEIGHT, Component.translatable("idc.config.sound"),
+                (button, value) -> {
+                    this.daySound = value;
+                    IDCSounds.play(value);
+                }));
         rows.addChild(styleButton("idc.config.display_center", IDCStyleConfigScreen.StyleTarget.CENTER));
         rows.addChild(styleButton("idc.config.display_hotbar", IDCStyleConfigScreen.StyleTarget.HOTBAR));
         rows.addChild(styleButton("idc.config.display_corner", IDCStyleConfigScreen.StyleTarget.CORNER));
@@ -88,6 +101,7 @@ public final class IDCConfigScreen extends Screen {
 
     private void apply() {
         IDCConfig.get().sounds.enabled = this.soundsEnabled;
+        IDCConfig.get().sounds.sound = this.daySound;
         IDCConfig.save();
         this.minecraft.setScreen(this.parent);
     }

@@ -16,4 +16,8 @@ public final class DayClock {
     public static long completedDays(Level level) {
         return level.getDayTime() / TICKS_PER_DAY;
     }
+
+    public static long currentDayTicks(Level level) {
+        return Math.floorMod(level.getDayTime(), TICKS_PER_DAY);
+    }
 }

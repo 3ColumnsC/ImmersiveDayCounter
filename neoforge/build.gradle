@@ -57,6 +57,7 @@ jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes([
+                'MixinConfigs': 'idc.mixins.json',
                 'Implementation-Version': project.version
         ])
     }
