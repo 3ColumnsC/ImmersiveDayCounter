@@ -72,6 +72,13 @@ public final class IDCConfig {
         lastModified = modifiedTime(filePath);
     }
 
+    public static void resetToDefaults() {
+        IDCConfig defaults = new IDCConfig();
+        defaults.sanitize();
+        instance = defaults;
+        save();
+    }
+
     private static long modifiedTime(Path file) {
         try {
             return Files.exists(file) ? Files.getLastModifiedTime(file).toMillis() : -1L;
@@ -161,7 +168,9 @@ public final class IDCConfig {
         @SerializedName("pling")
         PLING,
         @SerializedName("creeper")
-        CREEPER
+        CREEPER,
+        @SerializedName("random")
+        RANDOM
     }
 
     public enum DayTimeFormat {
@@ -169,6 +178,15 @@ public final class IDCConfig {
         H24,
         @SerializedName("12h")
         H12
+    }
+
+    public enum DisplayContent {
+        @SerializedName("day")
+        DAY,
+        @SerializedName("time")
+        TIME,
+        @SerializedName("day_and_time")
+        DAY_AND_TIME
     }
 
     public static final class Sounds {
@@ -183,19 +201,19 @@ public final class IDCConfig {
     }
 
     public static final class Display {
-        public Style center = Style.create(true, false, false, false);
-        public Style hotbar = Style.create(true, true, false, true);
-        public CornerStyle corner = CornerStyle.create(false, true, true, false);
+        public Style center = Style.create(true, false, false, DisplayContent.DAY);
+        public Style hotbar = Style.create(true, true, false, DisplayContent.DAY_AND_TIME);
+        public CornerStyle corner = CornerStyle.create(false, true, true, DisplayContent.DAY);
 
         private void sanitize() {
             if (this.center == null) {
-                this.center = Style.create(true, false, false, false);
+                this.center = Style.create(true, false, false, DisplayContent.DAY);
             }
             if (this.hotbar == null) {
-                this.hotbar = Style.create(true, true, false, true);
+                this.hotbar = Style.create(true, true, false, DisplayContent.DAY_AND_TIME);
             }
             if (this.corner == null) {
-                this.corner = CornerStyle.create(false, true, true, false);
+                this.corner = CornerStyle.create(false, true, true, DisplayContent.DAY);
             }
             this.center.sanitize();
             this.hotbar.sanitize();
@@ -212,19 +230,21 @@ public final class IDCConfig {
         public String textColor = "#FFFFFF";
         public boolean specialDayText = true;
         public String specialDayTextColor = "#FF7A5E";
-        public boolean showDayTime;
+        public DisplayContent content;
+        @SerializedName("showDayTime")
+        private Boolean legacyShowDayTime;
         public DayTimeFormat dayTimeFormat = DayTimeFormat.H24;
         public transient int textColorRgb = DEFAULT_TEXT_COLOR;
         public transient int specialDayTextColorRgb = DEFAULT_SPECIAL_DAY_TEXT_COLOR;
 
-        private static Style create(boolean enabled, boolean permanent, boolean background, boolean showDayTime) {
+        private static Style create(boolean enabled, boolean permanent, boolean background, DisplayContent content) {
             Style style = new Style();
             style.enabled = enabled;
             style.permanent = permanent;
             style.durationSeconds = 3.0D;
             style.fadeSeconds = 0.6D;
             style.background = background;
-            style.showDayTime = showDayTime;
+            style.content = content;
             return style;
         }
 
@@ -245,6 +265,12 @@ public final class IDCConfig {
             this.textColor = formatColor(this.textColorRgb);
             this.specialDayTextColorRgb = parseColor(this.specialDayTextColor, DEFAULT_SPECIAL_DAY_TEXT_COLOR);
             this.specialDayTextColor = formatColor(this.specialDayTextColorRgb);
+            if (this.content == null) {
+                this.content = Boolean.TRUE.equals(this.legacyShowDayTime)
+                    ? DisplayContent.DAY_AND_TIME
+                    : DisplayContent.DAY;
+            }
+            this.legacyShowDayTime = null;
             if (this.dayTimeFormat == null) {
                 this.dayTimeFormat = DayTimeFormat.H24;
             }
@@ -254,14 +280,14 @@ public final class IDCConfig {
     public static final class CornerStyle extends Style {
         public Position position = Position.TOP_LEFT;
 
-        private static CornerStyle create(boolean enabled, boolean permanent, boolean background, boolean showDayTime) {
+        private static CornerStyle create(boolean enabled, boolean permanent, boolean background, DisplayContent content) {
             CornerStyle style = new CornerStyle();
             style.enabled = enabled;
             style.permanent = permanent;
             style.durationSeconds = 3.0D;
             style.fadeSeconds = 0.6D;
             style.background = background;
-            style.showDayTime = showDayTime;
+            style.content = content;
             return style;
         }
 
