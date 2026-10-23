@@ -61,7 +61,7 @@ public final class IDCStyleConfigScreen extends Screen {
     private String textColor;
     private boolean specialDayText;
     private String specialDayTextColor;
-    private boolean showDayTime;
+    private IDCConfig.DisplayContent content;
     private IDCConfig.DayTimeFormat dayTimeFormat;
     private IDCConfig.Position position;
 
@@ -96,7 +96,7 @@ public final class IDCStyleConfigScreen extends Screen {
         this.textColor = style.textColor;
         this.specialDayText = style.specialDayText;
         this.specialDayTextColor = style.specialDayTextColor;
-        this.showDayTime = style.showDayTime;
+        this.content = style.content;
         this.dayTimeFormat = style.dayTimeFormat;
         IDCConfig.CornerStyle corner = cornerStyle();
         if (corner != null) {
@@ -132,6 +132,7 @@ public final class IDCStyleConfigScreen extends Screen {
 
         GridLayout.RowHelper rows = grid.createRowHelper(1);
         rows.addChild(toggle("idc.config.enabled", this.enabled, value -> this.enabled = value));
+        rows.addChild(contentButton());
         rows.addChild(toggle("idc.config.permanent", this.permanent, value -> this.permanent = value));
         rows.addChild(new DoubleSlider(0, 0, WIDGET_WIDTH, WIDGET_HEIGHT, Component.translatable("idc.config.duration"),
             0.5D, 15.0D, 0.5D, this.durationSeconds, value -> this.durationSeconds = value));
@@ -142,7 +143,6 @@ public final class IDCStyleConfigScreen extends Screen {
         rows.addChild(toggle("idc.config.special_day_text", this.specialDayText, value -> this.specialDayText = value));
         rows.addChild(colorRow("idc.config.special_day_text_color", this.specialDayTextColor,
             value -> this.specialDayTextColor = value));
-        rows.addChild(toggle("idc.config.show_day_time", this.showDayTime, value -> this.showDayTime = value));
         rows.addChild(dayTimeFormatButton());
         if (this.target == StyleTarget.CORNER) {
             rows.addChild(positionButton());
@@ -176,6 +176,15 @@ public final class IDCStyleConfigScreen extends Screen {
                 (button, value) -> this.position = value);
     }
 
+    private CycleButton<IDCConfig.DisplayContent> contentButton() {
+        return CycleButton.builder(
+                content -> Component.translatable("idc.config.content." + content.name().toLowerCase(Locale.ROOT)),
+                this.content)
+            .withValues(IDCConfig.DisplayContent.values())
+            .create(0, 0, WIDGET_WIDTH, WIDGET_HEIGHT, Component.translatable("idc.config.content"),
+                (button, value) -> this.content = value);
+    }
+
     private CycleButton<IDCConfig.DayTimeFormat> dayTimeFormatButton() {
         return CycleButton.builder(
                 format -> Component.translatable("idc.config.day_time_format." + format.name().toLowerCase(Locale.ROOT)),
@@ -195,7 +204,7 @@ public final class IDCStyleConfigScreen extends Screen {
         style.textColor = this.textColor;
         style.specialDayText = this.specialDayText;
         style.specialDayTextColor = this.specialDayTextColor;
-        style.showDayTime = this.showDayTime;
+        style.content = this.content;
         style.dayTimeFormat = this.dayTimeFormat;
         IDCConfig.CornerStyle corner = cornerStyle();
         if (corner != null && this.position != null) {
