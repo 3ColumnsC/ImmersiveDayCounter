@@ -4,9 +4,9 @@ A lightweight mod that tracks the in-game day and announces every new day with a
 
 ---
 
-<img src="https://res.cloudinary.com/dbtdewiqk/image/upload/v1792324420/1_y2g1dh.jpg" alt="Immersive Day Counter: Fully Configurable" width="900">
+<img src="https://res.cloudinary.com/dbtdewiqk/image/upload/v1792659336/1_ufvbtd.jpg" alt="Immersive Day Counter: Fully Configurable" width="900">
 <img src="https://res.cloudinary.com/dbtdewiqk/image/upload/v1792324420/2_tra7fv.jpg" alt="Immersive Day Counter: Fully Configurable" width="900">
-<img src="https://res.cloudinary.com/dbtdewiqk/image/upload/v1792324420/3_twi0wo.jpg" alt="Immersive Day Counter: Config Screen" width="900">
+<img src="https://res.cloudinary.com/dbtdewiqk/image/upload/v1792659336/3_kkqmpk.jpg" alt="Immersive Day Counter: Config Screen" width="900">
 
 ---
 
@@ -15,10 +15,16 @@ A lightweight mod that tracks the in-game day and announces every new day with a
 | Language | Main | Variants |
 |---|---|---|
 | English | `en_us` | None |
-| Español | `es_es` | `es_mx` |
-| Deutsch | `de_de` | None |
+| Español | `es_es` | `es_mx` `es_ar` |
+| Deutsch | `de_de` | `de_at` `de_ch` |
 | Français | `fr_fr` | None |
+| Italiano | `it_it` | None |
 | Português | `pt_pt` | `pt_br` |
+| Русский | `ru_ru` | None |
+| 简体中文 | `zh_cn` | None |
+| 繁體中文 | `zh_tw` | None |
+| 日本語 | `ja_jp` | None |
+| 한국어 | `ko_kr` | None |
 
 ---
 
@@ -36,11 +42,15 @@ Note: this counter is not the same as F3. F3 shows the day starting at 0, while 
 
 Three independent styles, each fully configurable:
 
-| Style | Where | Behaviour |
-|---|---|---|
-| Center Display | Middle of the screen | Large "DAY" title shown for a few seconds, then it fades out |
-| Hotbar Display | Above the hotbar | Permanent or timed |
-| Corner Display | A screen corner | Permanent or timed, with a configurable corner |
+| Style | Where | Behaviour                                                                                                      |
+|---|---|----------------------------------------------------------------------------------------------------------------|
+| Center Display | Middle of the screen | Permanent or timed. Large "DAY" title shown for a few seconds, then it fades out (can also show only the time) |
+| Hotbar Display | Above the hotbar | Permanent or timed                                                                                             |
+| Corner Display | A screen corner | Permanent or timed, with a configurable corner                                                                 |
+
+### ⏰ Day and time content
+
+Each style can show the day, the time, or both via the `content` option (`day` / `time` / `day_and_time`). The clock uses a 24-hour or 12-hour (AM/PM) format.
 
 ### 🎨 Colors and special days
 
@@ -60,10 +70,7 @@ A sound plays on each day change. It can be toggled off.
 - Experience orb
 - Experience level-up
 - Short bell
-
-### ⏰ In-game time
-
-Show the current in-game time next to the day. It is per display with a 24-hour or 12-hour (AM/PM) format.
+- Random (picks one of the other sounds at random each day)
 
 ### ⌨️ Command
 
@@ -75,7 +82,7 @@ Show the current in-game time next to the day. It is per display with a 24-hour 
 
 ## ⚙️ Configuration
 
-The easiest way is in game: open **Mod Menu (Fabric)** or the **Config** button in the mods list (NeoForge). The **General** screen has the sound settings and one button per display style. No game restart needed.
+The easiest way is in game: open **Mod Menu (Fabric)** or the **Config** button in the mods list (NeoForge). The **General** screen has the sound settings, one button per display style, and a **Reset to default** action. No game restart needed.
 
 If you prefer editing the file manually:
 
@@ -87,9 +94,9 @@ config/immersive-day-counter.json
 {
   "sounds": { "enabled": true, "sound": "pling" },
   "display": {
-    "center": { "enabled": true,  "permanent": false, "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": false, "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E", "showDayTime": false, "dayTimeFormat": "24h" },
-    "hotbar": { "enabled": true,  "permanent": true,  "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": false, "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E", "showDayTime": true, "dayTimeFormat": "24h" },
-    "corner": { "enabled": false, "permanent": true,  "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": true,  "position": "top_left", "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E", "showDayTime": false, "dayTimeFormat": "24h" }
+    "center": { "enabled": true,  "permanent": false, "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": false, "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E", "content": "day", "dayTimeFormat": "24h" },
+    "hotbar": { "enabled": true,  "permanent": true,  "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": false, "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E", "content": "day_and_time", "dayTimeFormat": "24h" },
+    "corner": { "enabled": false, "permanent": true,  "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": true,  "position": "top_left", "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E", "content": "day", "dayTimeFormat": "24h" }
   }
 }
 ```
@@ -97,7 +104,7 @@ config/immersive-day-counter.json
 | Option | Values | Default | Description |
 |---|---|---|---|
 | `sounds.enabled` | `true` / `false` | `true` | Daily sound on each day change. Milestones use the vanilla advancement sound regardless. |
-| `sounds.sound` | `click` / `experience` / `level_up` / `bell` / `pickup` / `pling` / `creeper` | `pling` | Sound played when a new day starts. |
+| `sounds.sound` | `click` / `experience` / `level_up` / `bell` / `pickup` / `pling` / `creeper` / `random` | `pling` | Sound played when a new day starts. `random` picks one of the other sounds each day. |
 | `enabled` | `true` / `false` | center and hotbar `true`, corner `false` | Show that style. |
 | `permanent` | `true` / `false` | hotbar and corner `true` | Permanent instead of timed. |
 | `durationSeconds` | 0.5 to 15.0 | `3.0` | How long a timed display stays. |
@@ -106,7 +113,7 @@ config/immersive-day-counter.json
 | `textColor` | `#RRGGBB` | `#FFFFFF` | Text color. |
 | `specialDayText` | `true` / `false` | `true` | Use the special color on every 100th day. |
 | `specialDayTextColor` | `#RRGGBB` | `#FF7A5E` | Special day color. |
-| `showDayTime` | `true` / `false` | hotbar `true`, center/corner `false` | Show the in-game time next to the day (per style). |
+| `content` | `day` / `time` / `day_and_time` | center/corner `day`, hotbar `day_and_time` | What each style shows: only the day, only the time, or both. |
 | `dayTimeFormat` | `24h` / `12h` | `24h` | Time format (24-hour, or 12-hour with AM/PM). |
 | `corner.position` | `top_left` / `top_right` / `bottom_right` / `bottom_left` | `top_left` | Corner used by the Corner Display. |
 

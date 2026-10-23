@@ -65,10 +65,14 @@ public final class DisplayRenderer {
         if (alpha <= 0) {
             return;
         }
+        if (style.content == IDCConfig.DisplayContent.TIME) {
+            renderCenterTime(graphics, font, style, day, alpha);
+            return;
+        }
 
         Component title = Component.translatable("idc.display.title");
         Component dayLine = Component.literal(formatDay(day));
-        boolean showTime = style.showDayTime;
+        boolean showTime = style.content == IDCConfig.DisplayContent.DAY_AND_TIME;
         Component timeLine = showTime ? timeLabel(style.dayTimeFormat) : null;
 
         float titleScale = 4.0F;
@@ -132,6 +136,38 @@ public final class DisplayRenderer {
             graphics.drawString(font, timeLine, timeX, timeY, ARGB.color(alpha, textColor(style, day)), shadow);
             graphics.pose().popMatrix();
         }
+
+        graphics.pose().popMatrix();
+    }
+
+    private static void renderCenterTime(GuiGraphics graphics, Font font, IDCConfig.Style style, long day, int alpha) {
+        Component timeLine = timeLabel(style.dayTimeFormat);
+        float scale = 2.0F;
+        int width = font.width(timeLine);
+        int height = Math.round(font.lineHeight * scale);
+        int blockTop = -Math.round(height / 2.0F);
+        int x = -width / 2;
+        int y = Math.round(blockTop / scale);
+        int top = Math.round(y * scale);
+        int left = Math.round(x * scale);
+        int right = Math.round((x + width - FONT_TRAILING_SPACING) * scale);
+        int bottom = Math.round((y + font.lineHeight - FONT_LINE_SLACK) * scale);
+        boolean background = hasBackground(style);
+        boolean shadow = !background;
+
+        graphics.nextStratum();
+        graphics.pose().pushMatrix();
+        graphics.pose().translate(graphics.guiWidth() / 2.0F, graphics.guiHeight() / 2.0F);
+
+        if (background) {
+            graphics.fill(left - PANEL_PADDING, top - PANEL_PADDING,
+                right + PANEL_PADDING, bottom + PANEL_PADDING, panelColor(alpha));
+        }
+
+        graphics.pose().pushMatrix();
+        graphics.pose().scale(scale, scale);
+        graphics.drawString(font, timeLine, x, y, ARGB.color(alpha, textColor(style, day)), shadow);
+        graphics.pose().popMatrix();
 
         graphics.pose().popMatrix();
     }
@@ -270,10 +306,11 @@ public final class DisplayRenderer {
 
     private static Component dayText(IDCConfig.Style style, long day) {
         Component dayOnly = Component.translatable("idc.hud.day", formatDay(day));
-        if (!style.showDayTime) {
-            return dayOnly;
-        }
-        return Component.translatable("idc.hud.day_time", dayOnly, timeLabel(style.dayTimeFormat));
+        return switch (style.content) {
+            case DAY -> dayOnly;
+            case TIME -> timeLabel(style.dayTimeFormat);
+            case DAY_AND_TIME -> Component.translatable("idc.hud.day_time", dayOnly, timeLabel(style.dayTimeFormat));
+        };
     }
 
     private static Component timeLabel(IDCConfig.DayTimeFormat format) {

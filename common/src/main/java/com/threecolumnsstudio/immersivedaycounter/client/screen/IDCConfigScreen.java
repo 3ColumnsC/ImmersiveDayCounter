@@ -13,6 +13,7 @@ import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -83,11 +84,17 @@ public final class IDCConfigScreen extends Screen {
             .create(0, 0, WIDGET_WIDTH, WIDGET_HEIGHT, Component.translatable("idc.config.sound"),
                 (button, value) -> {
                     this.daySound = value;
-                    IDCSounds.play(value);
+                    if (value != IDCConfig.DaySound.RANDOM) {
+                        IDCSounds.play(value);
+                    }
                 }));
         rows.addChild(styleButton("idc.config.display_center", IDCStyleConfigScreen.StyleTarget.CENTER));
         rows.addChild(styleButton("idc.config.display_hotbar", IDCStyleConfigScreen.StyleTarget.HOTBAR));
         rows.addChild(styleButton("idc.config.display_corner", IDCStyleConfigScreen.StyleTarget.CORNER));
+        rows.addChild(Button.builder(Component.translatable("idc.config.reset"),
+                button -> openResetConfirmation())
+            .width(WIDGET_WIDTH)
+            .build());
 
         return grid;
     }
@@ -97,6 +104,22 @@ public final class IDCConfigScreen extends Screen {
                 button -> this.minecraft.setScreen(new IDCStyleConfigScreen(this, target)))
             .width(WIDGET_WIDTH)
             .build();
+    }
+
+    private void openResetConfirmation() {
+        this.minecraft.setScreen(new ConfirmScreen(
+            confirmed -> {
+                if (confirmed) {
+                    IDCConfig.resetToDefaults();
+                    this.minecraft.setScreen(new IDCConfigScreen(this.parent));
+                } else {
+                    this.minecraft.setScreen(this);
+                }
+            },
+            Component.translatable("idc.config.reset.title"),
+            Component.translatable("idc.config.reset.message"),
+            Component.translatable("idc.config.reset.confirm"),
+            CommonComponents.GUI_CANCEL));
     }
 
     private void apply() {
