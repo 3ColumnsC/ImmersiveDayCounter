@@ -3,6 +3,7 @@ package com.threecolumnsstudio.immersivedaycounter.client.screen;
 import com.threecolumnsstudio.immersivedaycounter.client.IDCSounds;
 import com.threecolumnsstudio.immersivedaycounter.config.IDCConfig;
 import java.util.Locale;
+import java.util.function.Consumer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
@@ -33,10 +34,13 @@ public final class IDCConfigScreen extends Screen {
     private final TabManager tabManager;
 
     private MenuTabBar tabNavigationBar;
-    private ScrollableLayout scrollArea;
+    private ScrollableLayout generalScrollArea;
+    private ScrollableLayout lumenScrollArea;
 
     private boolean soundsEnabled;
     private IDCConfig.DaySound daySound;
+    private double lumenBrightness;
+    private boolean lumenClearFog;
 
     public IDCConfigScreen(Screen parent) {
         super(Component.translatable("idc.config.title"));
@@ -45,14 +49,18 @@ public final class IDCConfigScreen extends Screen {
         this.tabManager = new TabManager(this::addRenderableWidget, this::removeWidget);
         this.soundsEnabled = IDCConfig.get().sounds.enabled;
         this.daySound = IDCConfig.get().sounds.sound;
+        this.lumenBrightness = IDCConfig.get().lumen.brightness;
+        this.lumenClearFog = IDCConfig.get().lumen.clearFog;
     }
 
     @Override
     protected void init() {
-        this.scrollArea = new ScrollableLayout(this.minecraft, buildContentGrid(), INITIAL_SCROLL_HEIGHT);
+        this.generalScrollArea = new ScrollableLayout(this.minecraft, buildGeneralGrid(), INITIAL_SCROLL_HEIGHT);
+        this.lumenScrollArea = new ScrollableLayout(this.minecraft, buildLumenGrid(), INITIAL_SCROLL_HEIGHT);
 
         this.tabNavigationBar = MenuTabBar.builder(this.tabManager, this.width)
-            .addTab(new ScrollConfigTab(Component.translatable("idc.config.tab.general"), this.scrollArea))
+            .addTab(new ScrollConfigTab(Component.translatable("idc.config.tab.general"), this.generalScrollArea))
+            .addTab(new ScrollConfigTab(Component.translatable("idc.config.tab.lumen"), this.lumenScrollArea))
             .build();
         this.addRenderableWidget(this.tabNavigationBar);
 
@@ -69,7 +77,7 @@ public final class IDCConfigScreen extends Screen {
         this.repositionElements();
     }
 
-    private GridLayout buildContentGrid() {
+    private GridLayout buildGeneralGrid() {
         GridLayout grid = new GridLayout();
         grid.columnSpacing(4).rowSpacing(ROW_SPACING);
 
@@ -99,6 +107,26 @@ public final class IDCConfigScreen extends Screen {
         return grid;
     }
 
+    private GridLayout buildLumenGrid() {
+        GridLayout grid = new GridLayout();
+        grid.columnSpacing(4).rowSpacing(ROW_SPACING);
+
+        GridLayout.RowHelper rows = grid.createRowHelper(1);
+        rows.addChild(new DoubleSlider(0, 0, WIDGET_WIDTH, WIDGET_HEIGHT,
+            Component.translatable("idc.config.lumen.brightness"),
+            0.0D, IDCConfig.Lumen.DEFAULT_BRIGHTNESS, 0.5D, this.lumenBrightness,
+            value -> this.lumenBrightness = value));
+        rows.addChild(toggle("idc.config.lumen.clear_fog", this.lumenClearFog, value -> this.lumenClearFog = value));
+
+        return grid;
+    }
+
+    private CycleButton<Boolean> toggle(String translationKey, boolean initialValue, Consumer<Boolean> setter) {
+        return CycleButton.onOffBuilder(initialValue)
+            .create(0, 0, WIDGET_WIDTH, WIDGET_HEIGHT, Component.translatable(translationKey),
+                (button, value) -> setter.accept(value));
+    }
+
     private Button styleButton(String translationKey, IDCStyleConfigScreen.StyleTarget target) {
         return Button.builder(Component.translatable(translationKey),
                 button -> this.minecraft.gui.setScreen(new IDCStyleConfigScreen(this, target)))
@@ -125,6 +153,8 @@ public final class IDCConfigScreen extends Screen {
     private void apply() {
         IDCConfig.get().sounds.enabled = this.soundsEnabled;
         IDCConfig.get().sounds.sound = this.daySound;
+        IDCConfig.get().lumen.brightness = this.lumenBrightness;
+        IDCConfig.get().lumen.clearFog = this.lumenClearFog;
         IDCConfig.save();
         this.minecraft.gui.setScreen(this.parent);
     }

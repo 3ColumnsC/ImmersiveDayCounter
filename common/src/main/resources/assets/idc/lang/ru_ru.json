@@ -56,5 +56,12 @@
   "idc.config.day_time_format.h24": "24 часа",
   "idc.config.day_time_format.h12": "12 часов",
   "idc.time.am": "ДП",
-  "idc.time.pm": "ПП"
+  "idc.time.pm": "ПП",
+  "key.category.idc.lumen": "Immersive Day Counter",
+  "key.idc.lumen.toggle": "Переключить Lumen",
+  "idc.message.lumen.enabled": "Lumen включён",
+  "idc.message.lumen.disabled": "Lumen отключён",
+  "idc.config.tab.lumen": "Lumen",
+  "idc.config.lumen.brightness": "Яркость",
+  "idc.config.lumen.clear_fog": "Убрать туман"
 }

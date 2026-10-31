@@ -23,6 +23,7 @@ public final class IDCConfig {
 
     public Sounds sounds = new Sounds();
     public Display display = new Display();
+    public Lumen lumen = new Lumen();
 
     private IDCConfig() {
     }
@@ -75,6 +76,9 @@ public final class IDCConfig {
     public static void resetToDefaults() {
         IDCConfig defaults = new IDCConfig();
         defaults.sanitize();
+        if (instance != null && instance.lumen != null) {
+            defaults.lumen = instance.lumen;
+        }
         instance = defaults;
         save();
     }
@@ -117,8 +121,12 @@ public final class IDCConfig {
         if (this.display == null) {
             this.display = new Display();
         }
+        if (this.lumen == null) {
+            this.lumen = new Lumen();
+        }
         this.sounds.sanitize();
         this.display.sanitize();
+        this.lumen.sanitize();
     }
 
     private static int parseColor(String value, int fallback) {
@@ -196,6 +204,25 @@ public final class IDCConfig {
         private void sanitize() {
             if (this.sound == null) {
                 this.sound = DaySound.PLING;
+            }
+        }
+    }
+
+    public static final class Lumen {
+        public static final double DEFAULT_BRIGHTNESS = 15.0D;
+
+        public double brightness = DEFAULT_BRIGHTNESS;
+        public boolean clearFog = true;
+
+        private void sanitize() {
+            if (Double.isNaN(this.brightness)) {
+                this.brightness = DEFAULT_BRIGHTNESS;
+            }
+            if (this.brightness < 0.0D) {
+                this.brightness = 0.0D;
+            }
+            if (this.brightness > DEFAULT_BRIGHTNESS) {
+                this.brightness = DEFAULT_BRIGHTNESS;
             }
         }
     }

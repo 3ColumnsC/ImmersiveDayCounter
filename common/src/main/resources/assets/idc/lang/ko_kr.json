@@ -56,5 +56,12 @@
   "idc.config.day_time_format.h24": "24시간제",
   "idc.config.day_time_format.h12": "12시간제",
   "idc.time.am": "오전",
-  "idc.time.pm": "오후"
+  "idc.time.pm": "오후",
+  "key.category.idc.lumen": "Immersive Day Counter",
+  "key.idc.lumen.toggle": "Lumen 전환",
+  "idc.message.lumen.enabled": "Lumen 활성화",
+  "idc.message.lumen.disabled": "Lumen 비활성화",
+  "idc.config.tab.lumen": "Lumen",
+  "idc.config.lumen.brightness": "밝기",
+  "idc.config.lumen.clear_fog": "안개 제거"
 }
