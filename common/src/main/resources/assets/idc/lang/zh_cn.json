@@ -56,5 +56,12 @@
   "idc.config.day_time_format.h24": "24 小时制",
   "idc.config.day_time_format.h12": "12 小时制",
   "idc.time.am": "上午",
-  "idc.time.pm": "下午"
+  "idc.time.pm": "下午",
+  "key.category.idc.lumen": "Immersive Day Counter",
+  "key.idc.lumen.toggle": "切换 Lumen",
+  "idc.message.lumen.enabled": "Lumen 已启用",
+  "idc.message.lumen.disabled": "Lumen 已禁用",
+  "idc.config.tab.lumen": "Lumen",
+  "idc.config.lumen.brightness": "亮度",
+  "idc.config.lumen.clear_fog": "清除雾气"
 }
