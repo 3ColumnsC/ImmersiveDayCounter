@@ -56,5 +56,12 @@
   "idc.config.day_time_format.h24": "24時間制",
   "idc.config.day_time_format.h12": "12時間制",
   "idc.time.am": "午前",
-  "idc.time.pm": "午後"
+  "idc.time.pm": "午後",
+  "key.category.idc.lumen": "Immersive Day Counter",
+  "key.idc.lumen.toggle": "Lumen を切り替え",
+  "idc.message.lumen.enabled": "Lumen 有効",
+  "idc.message.lumen.disabled": "Lumen 無効",
+  "idc.config.tab.lumen": "Lumen",
+  "idc.config.lumen.brightness": "明るさ",
+  "idc.config.lumen.clear_fog": "霧を消す"
 }

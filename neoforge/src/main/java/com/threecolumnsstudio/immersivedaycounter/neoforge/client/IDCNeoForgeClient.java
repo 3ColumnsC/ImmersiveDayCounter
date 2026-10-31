@@ -3,8 +3,10 @@ package com.threecolumnsstudio.immersivedaycounter.neoforge.client;
 import com.threecolumnsstudio.immersivedaycounter.ImmersiveDayCounter;
 import com.threecolumnsstudio.immersivedaycounter.client.ClientDayState;
 import com.threecolumnsstudio.immersivedaycounter.client.DisplayRenderer;
+import com.threecolumnsstudio.immersivedaycounter.client.lumen.LumenFeature;
 import com.threecolumnsstudio.immersivedaycounter.client.screen.IDCConfigScreen;
 import com.threecolumnsstudio.immersivedaycounter.config.IDCConfig;
+import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
@@ -14,6 +16,7 @@ import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
@@ -24,6 +27,7 @@ public final class IDCNeoForgeClient {
     public IDCNeoForgeClient(IEventBus modEventBus) {
         modEventBus.addListener(this::onClientSetup);
         modEventBus.addListener(this::onRegisterGuiLayers);
+        modEventBus.addListener(this::onRegisterKeyMappings);
         NeoForge.EVENT_BUS.addListener(this::onLoggingOut);
         NeoForge.EVENT_BUS.addListener(this::onClientTick);
     }
@@ -39,11 +43,18 @@ public final class IDCNeoForgeClient {
         event.registerAbove(VanillaGuiLayers.CHAT, ImmersiveDayCounter.id("hud"), DisplayRenderer::render);
     }
 
+    private void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
+        event.register(LumenFeature.KEY);
+        ImmersiveDayCounter.LOGGER.info("Lumen loaded successfully");
+    }
+
     private void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
         ClientDayState.reset();
+        LumenFeature.reset();
     }
 
     private void onClientTick(ClientTickEvent.Post event) {
         IDCConfig.reloadIfChanged();
+        LumenFeature.onClientTick(Minecraft.getInstance());
     }
 }

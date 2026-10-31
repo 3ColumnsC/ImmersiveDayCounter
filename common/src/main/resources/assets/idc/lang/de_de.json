@@ -56,5 +56,12 @@
   "idc.config.day_time_format.h24": "24 Stunden",
   "idc.config.day_time_format.h12": "12 Stunden",
   "idc.time.am": "AM",
-  "idc.time.pm": "PM"
+  "idc.time.pm": "PM",
+  "key.category.idc.lumen": "Immersive Day Counter",
+  "key.idc.lumen.toggle": "Lumen umschalten",
+  "idc.message.lumen.enabled": "Lumen aktiviert",
+  "idc.message.lumen.disabled": "Lumen deaktiviert",
+  "idc.config.tab.lumen": "Lumen",
+  "idc.config.lumen.brightness": "Helligkeit",
+  "idc.config.lumen.clear_fog": "Nebel entfernen"
 }
