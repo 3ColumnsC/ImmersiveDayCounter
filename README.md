@@ -1,6 +1,6 @@
 # Immersive Day Counter
 
-A lightweight mod that tracks the in-game day and announces every new day with a title, HUD display, sounds and milestone advancements, fully configurable.
+A lightweight mod that tracks the in-game day and announces every new day with a title, HUD display, sounds and milestone advancements, fully configurable. It also includes **Lumen**, an optional client-side full-bright toggle.
 
 ---
 
@@ -72,6 +72,14 @@ A sound plays on each day change. It can be toggled off.
 - Short bell
 - Random (picks one of the other sounds at random each day)
 
+### 💡 Lumen (full bright)
+
+An optional client-side full-bright toggle. Press **Z** (by default) to brighten the world and clear water, Nether and End fog. A click and an on-screen message ("Lumen enabled" / "Lumen disabled") confirm the change.
+
+- Brightness (0–15) and fog clearing are adjustable in the **Lumen** tab of the config screen.
+- Works on any server.
+- Lumen may not work with some Shaders.
+
 ### ⌨️ Command
 
 | Command | Description |
@@ -82,7 +90,7 @@ A sound plays on each day change. It can be toggled off.
 
 ## ⚙️ Configuration
 
-The easiest way is in game: open **Mod Menu (Fabric)** or the **Config** button in the mods list (NeoForge). The **General** screen has the sound settings, one button per display style, and a **Reset to default** action. No game restart needed.
+The easiest way is in game: open **Mod Menu (Fabric)** or the **Config** button in the mods list (NeoForge). The **General** tab has the sound settings, one button per display style, and a **Reset to default** action; the **Lumen** tab has the brightness and fog settings. No game restart needed.
 
 If you prefer editing the file manually:
 
@@ -97,7 +105,8 @@ config/immersive-day-counter.json
     "center": { "enabled": true,  "permanent": false, "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": false, "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E", "content": "day", "dayTimeFormat": "24h" },
     "hotbar": { "enabled": true,  "permanent": true,  "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": false, "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E", "content": "day_and_time", "dayTimeFormat": "24h" },
     "corner": { "enabled": false, "permanent": true,  "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": true,  "position": "top_left", "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E", "content": "day", "dayTimeFormat": "24h" }
-  }
+  },
+  "lumen": { "brightness": 15.0, "clearFog": true }
 }
 ```
 
@@ -115,6 +124,8 @@ config/immersive-day-counter.json
 | `specialDayTextColor` | `#RRGGBB` | `#FF7A5E` | Special day color. |
 | `content` | `day` / `time` / `day_and_time` | center/corner `day`, hotbar `day_and_time` | What each style shows: only the day, only the time, or both. |
 | `dayTimeFormat` | `24h` / `12h` | `24h` | Time format (24-hour, or 12-hour with AM/PM). |
+| `lumen.brightness` | 0.0 to 15.0 | `15.0` | World brightness while Lumen is on. |
+| `lumen.clearFog` | `true` / `false` | `true` | Clear water and Nether/End fog while Lumen is on. |
 | `corner.position` | `top_left` / `top_right` / `bottom_right` / `bottom_left` | `top_left` | Corner used by the Corner Display. |
 
 ---

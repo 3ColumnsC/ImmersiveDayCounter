@@ -4,7 +4,11 @@
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [],
 	"client": [
-		"GuiAccessor"
+		"GuiAccessor",
+		"GammaAccessor",
+		"OptionsSaveMixin",
+		"WaterFogEnvironmentMixin",
+		"AtmosphericFogEnvironmentMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
