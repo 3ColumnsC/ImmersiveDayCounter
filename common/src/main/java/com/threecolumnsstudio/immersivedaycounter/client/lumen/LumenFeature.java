@@ -19,6 +19,7 @@ public final class LumenFeature {
     );
 
     private static boolean enabled;
+    private static boolean keyWasDown;
 
     private LumenFeature() {
     }
@@ -34,6 +35,7 @@ public final class LumenFeature {
 
     public static void reset() {
         enabled = false;
+        keyWasDown = false;
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.options != null) {
             LumenBrightness.restore(minecraft);
@@ -41,7 +43,12 @@ public final class LumenFeature {
     }
 
     public static void onClientTick(Minecraft minecraft) {
-        if (KEY.consumeClick()) {
+        boolean clicked = false;
+        while (KEY.consumeClick()) {
+            clicked = true;
+        }
+        boolean down = KEY.isDown();
+        if (!keyWasDown && (down || clicked)) {
             boolean toggled = toggle();
             if (toggled) {
                 LumenBrightness.ensureActive(minecraft);
@@ -49,8 +56,8 @@ public final class LumenFeature {
                 LumenBrightness.restore(minecraft);
             }
             LumenFeedback.show(minecraft, toggled);
-            return;
         }
+        keyWasDown = down;
         if (enabled) {
             LumenBrightness.ensureActive(minecraft);
         }

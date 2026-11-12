@@ -63,5 +63,13 @@
   "idc.message.lumen.disabled": "Lumen 無効",
   "idc.config.tab.lumen": "Lumen",
   "idc.config.lumen.brightness": "明るさ",
-  "idc.config.lumen.clear_fog": "霧を消す"
+  "idc.config.lumen.clear_fog": "霧を消す",
+  "idc.hud.objective": "目標: %s日目",
+  "idc.hud.objective.reached": "達成！",
+  "commands.idc.objective.set": "目標を%s日目に設定しました",
+  "idc.config.tab.objective": "目標",
+  "idc.config.objective.default": "デフォルトの100日目目標",
+  "idc.config.objective.day": "目標の日数",
+  "idc.config.objective.show": "目標を表示",
+  "idc.config.content.only_objective": "目標のみ"
 }
