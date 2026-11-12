@@ -1,12 +1,12 @@
 # Immersive Day Counter
 
-A lightweight mod that tracks the in-game day and announces every new day with a title, HUD display, sounds and milestone advancements, fully configurable. It also includes **Lumen**, an optional client-side full-bright toggle.
+A lightweight mod that tracks the in-game day and announces every new day with a title, HUD display, sounds and milestone advancements, fully configurable. It also includes **Lumen**, an optional client-side full-bright toggle, and a client-side **Day Objective**.
 
 ---
 
-<img src="https://res.cloudinary.com/dbtdewiqk/image/upload/v1792659336/1_ufvbtd.jpg" alt="Immersive Day Counter: Fully Configurable" width="900">
 <img src="https://res.cloudinary.com/dbtdewiqk/image/upload/v1792324420/2_tra7fv.jpg" alt="Immersive Day Counter: Fully Configurable" width="900">
-<img src="https://res.cloudinary.com/dbtdewiqk/image/upload/v1792659336/3_kkqmpk.jpg" alt="Immersive Day Counter: Config Screen" width="900">
+<img src="https://res.cloudinary.com/dbtdewiqk/image/upload/v1794333908/5_lvvjaq.jpg" alt="Immersive Day Counter: Fully Configurable Day Objective" width="900">
+<img src="https://res.cloudinary.com/dbtdewiqk/image/upload/v1794337178/6_ektx6u.jpg" alt="Immersive Day Counter: Config Screen" width="900">
 
 ---
 
@@ -15,7 +15,7 @@ A lightweight mod that tracks the in-game day and announces every new day with a
 | Language | Main | Variants |
 |---|---|---|
 | English | `en_us` | None |
-| Español | `es_es` | `es_mx` `es_ar` |
+| Español | `es_es` | `es_mx` `es_ar` `es_cl` |
 | Deutsch | `de_de` | `de_at` `de_ch` |
 | Français | `fr_fr` | None |
 | Italiano | `it_it` | None |
@@ -50,7 +50,7 @@ Three independent styles, each fully configurable:
 
 ### ⏰ Day and time content
 
-Each style can show the day, the time, or both via the `content` option (`day` / `time` / `day_and_time`). The clock uses a 24-hour or 12-hour (AM/PM) format.
+Each style can show the day, the time, both, or only the objective via the `content` option (`day` / `time` / `day_and_time` / `only_objective`). The clock uses a 24-hour or 12-hour (AM/PM) format.
 
 ### 🎨 Colors and special days
 
@@ -80,17 +80,35 @@ An optional client-side full-bright toggle. Press **Z** (by default) to brighten
 - Works on any server.
 - Lumen may not work with some Shaders.
 
+### 🎯 Day Objective
+
+A client-side objective shown in the HUD. By default it is **Day 100**. When the current day reaches it, the HUD shows **Reached!** in green. The check is live: if the day is set back below the objective it stops being reached, and if the day is at or past it, it stays reached.
+
+- Change it with `/idcclient objective n` (no OP needed) or in the **Objective** tab of the config screen.
+- Each style has a **Show objective** toggle.
+- Set **Show** to **Only Objective** to display just the objective (without day or time).
+- The **Default Day 100 Objective** toggle uses Day 100. Setting a custom objective turns it off.
+
 ### ⌨️ Command
 
 | Command | Description |
 |---|---|
 | `/idc set day n` | OP only. Sets the world day to `n` (1 to 1,000,000). |
+| `/idcclient objective n` | Client-side, no OP. Sets the objective to `n` (1 to 1,000,000). |
 
 ---
 
 ## ⚙️ Configuration
 
-The easiest way is in game: open **Mod Menu (Fabric)** or the **Config** button in the mods list (NeoForge). The **General** tab has the sound settings, one button per display style, and a **Reset to default** action; the **Lumen** tab has the brightness and fog settings. No game restart needed.
+The easiest way is in game: open **Mod Menu (Fabric)** or the **Config** button in the mods list (NeoForge). 
+
+The **General** tab has the sound settings, one button per display style, and a **Reset to default** action. 
+
+The **Objective** tab has the default Day 100 toggle and the objective day. 
+
+The **Lumen** tab has the brightness and fog settings. 
+
+No game restart needed.
 
 If you prefer editing the file manually:
 
@@ -102,11 +120,12 @@ config/immersive-day-counter.json
 {
   "sounds": { "enabled": true, "sound": "pling" },
   "display": {
-    "center": { "enabled": true,  "permanent": false, "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": false, "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E", "content": "day", "dayTimeFormat": "24h" },
-    "hotbar": { "enabled": true,  "permanent": true,  "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": false, "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E", "content": "day_and_time", "dayTimeFormat": "24h" },
-    "corner": { "enabled": false, "permanent": true,  "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": true,  "position": "top_left", "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E", "content": "day", "dayTimeFormat": "24h" }
+    "center": { "enabled": true,  "permanent": false, "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": false, "showObjective": false, "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E", "content": "day", "dayTimeFormat": "24h" },
+    "hotbar": { "enabled": true,  "permanent": true,  "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": false, "showObjective": true,  "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E", "content": "day_and_time", "dayTimeFormat": "24h" },
+    "corner": { "enabled": false, "permanent": true,  "durationSeconds": 3.0, "fadeSeconds": 0.6, "background": true,  "showObjective": false, "position": "top_left", "textColor": "#FFFFFF", "specialDayText": true, "specialDayTextColor": "#FF7A5E", "content": "day", "dayTimeFormat": "24h" }
   },
-  "lumen": { "brightness": 15.0, "clearFog": true }
+  "lumen": { "brightness": 15.0, "clearFog": true },
+  "objective": { "defaultDay100": true, "day": 100 }
 }
 ```
 
@@ -122,11 +141,16 @@ config/immersive-day-counter.json
 | `textColor` | `#RRGGBB` | `#FFFFFF` | Text color. |
 | `specialDayText` | `true` / `false` | `true` | Use the special color on every 100th day. |
 | `specialDayTextColor` | `#RRGGBB` | `#FF7A5E` | Special day color. |
-| `content` | `day` / `time` / `day_and_time` | center/corner `day`, hotbar `day_and_time` | What each style shows: only the day, only the time, or both. |
+| `content` | `day` / `time` / `day_and_time` / `only_objective` | center/corner `day`, hotbar `day_and_time` | What each style shows: the day, the time, both, or only the objective. |
 | `dayTimeFormat` | `24h` / `12h` | `24h` | Time format (24-hour, or 12-hour with AM/PM). |
+| `showObjective` | `true` / `false` | hotbar `true`, center/corner `false` | Show the objective in that style. |
 | `lumen.brightness` | 0.0 to 15.0 | `15.0` | World brightness while Lumen is on. |
 | `lumen.clearFog` | `true` / `false` | `true` | Clear water and Nether/End fog while Lumen is on. |
+| `objective.defaultDay100` | `true` / `false` | `true` | Use the default Day 100 objective. |
+| `objective.day` | 1 to 1,000,000 | `100` | Custom objective day (used when `defaultDay100` is `false`). |
 | `corner.position` | `top_left` / `top_right` / `bottom_right` / `bottom_left` | `top_left` | Corner used by the Corner Display. |
+
+**Reset to default** resets sounds and display styles but keeps the Lumen and Objective settings. Lumen's on/off state is not stored; toggle it with `Z` (or the key you bind in Controls).
 
 ---
 

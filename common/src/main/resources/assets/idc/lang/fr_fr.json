@@ -63,5 +63,13 @@
   "idc.message.lumen.disabled": "Lumen désactivé",
   "idc.config.tab.lumen": "Lumen",
   "idc.config.lumen.brightness": "Luminosité",
-  "idc.config.lumen.clear_fog": "Supprimer le brouillard"
+  "idc.config.lumen.clear_fog": "Supprimer le brouillard",
+  "idc.hud.objective": "Objectif : Jour %s",
+  "idc.hud.objective.reached": "Atteint !",
+  "commands.idc.objective.set": "Objectif défini au jour %s",
+  "idc.config.tab.objective": "Objectif",
+  "idc.config.objective.default": "Objectif par défaut du jour 100",
+  "idc.config.objective.day": "Jour de l'objectif",
+  "idc.config.objective.show": "Afficher l'objectif",
+  "idc.config.content.only_objective": "Objectif uniquement"
 }

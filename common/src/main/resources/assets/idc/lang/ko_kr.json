@@ -63,5 +63,13 @@
   "idc.message.lumen.disabled": "Lumen 비활성화",
   "idc.config.tab.lumen": "Lumen",
   "idc.config.lumen.brightness": "밝기",
-  "idc.config.lumen.clear_fog": "안개 제거"
+  "idc.config.lumen.clear_fog": "안개 제거",
+  "idc.hud.objective": "목표: %s일차",
+  "idc.hud.objective.reached": "달성!",
+  "commands.idc.objective.set": "목표를 %s일차로 설정했습니다",
+  "idc.config.tab.objective": "목표",
+  "idc.config.objective.default": "기본 100일차 목표",
+  "idc.config.objective.day": "목표 일수",
+  "idc.config.objective.show": "목표 표시",
+  "idc.config.content.only_objective": "목표만"
 }

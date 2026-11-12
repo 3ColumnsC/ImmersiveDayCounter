@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.ScrollableLayout;
+import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.tabs.TabManager;
 import net.minecraft.client.gui.components.tabs.TabNavigationBar;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -35,10 +36,14 @@ public final class IDCConfigScreen extends Screen {
 
     private TabNavigationBar tabNavigationBar;
     private ScrollableLayout generalScrollArea;
+    private ScrollableLayout objectiveScrollArea;
     private ScrollableLayout lumenScrollArea;
 
     private boolean soundsEnabled;
     private IDCConfig.DaySound daySound;
+    private boolean objectiveDefaultDay100;
+    private long objectiveDay;
+    private NumberField objectiveDayField;
     private double lumenBrightness;
     private boolean lumenClearFog;
 
@@ -49,6 +54,8 @@ public final class IDCConfigScreen extends Screen {
         this.tabManager = new TabManager(this::addRenderableWidget, this::removeWidget);
         this.soundsEnabled = IDCConfig.get().sounds.enabled;
         this.daySound = IDCConfig.get().sounds.sound;
+        this.objectiveDefaultDay100 = IDCConfig.get().objective.defaultDay100;
+        this.objectiveDay = IDCConfig.get().objective.day;
         this.lumenBrightness = IDCConfig.get().lumen.brightness;
         this.lumenClearFog = IDCConfig.get().lumen.clearFog;
     }
@@ -56,11 +63,13 @@ public final class IDCConfigScreen extends Screen {
     @Override
     protected void init() {
         this.generalScrollArea = new ScrollableLayout(this.minecraft, buildContentGrid(), INITIAL_SCROLL_HEIGHT);
+        this.objectiveScrollArea = new ScrollableLayout(this.minecraft, buildObjectiveGrid(), INITIAL_SCROLL_HEIGHT);
         this.lumenScrollArea = new ScrollableLayout(this.minecraft, buildLumenGrid(), INITIAL_SCROLL_HEIGHT);
 
         this.tabNavigationBar = TabNavigationBar.builder(this.tabManager, this.width)
             .addTabs(
                 new ScrollConfigTab(Component.translatable("idc.config.tab.general"), this.generalScrollArea),
+                new ScrollConfigTab(Component.translatable("idc.config.tab.objective"), this.objectiveScrollArea),
                 new ScrollConfigTab(Component.translatable("idc.config.tab.lumen"), this.lumenScrollArea))
             .build();
         this.addRenderableWidget(this.tabNavigationBar);
@@ -106,6 +115,40 @@ public final class IDCConfigScreen extends Screen {
             .build());
 
         return grid;
+    }
+
+    private GridLayout buildObjectiveGrid() {
+        GridLayout grid = new GridLayout();
+        grid.columnSpacing(4).rowSpacing(ROW_SPACING);
+
+        GridLayout.RowHelper rows = grid.createRowHelper(1);
+        rows.addChild(CycleButton.onOffBuilder(this.objectiveDefaultDay100)
+            .create(0, 0, WIDGET_WIDTH, WIDGET_HEIGHT, Component.translatable("idc.config.objective.default"),
+                (button, value) -> updateObjectiveToggle(value)));
+        rows.addChild(objectiveDayRow());
+
+        return grid;
+    }
+
+    private void updateObjectiveToggle(boolean value) {
+        this.objectiveDefaultDay100 = value;
+        if (this.objectiveDayField != null) {
+            this.objectiveDayField.setEditable(!value);
+            this.objectiveDayField.setValue(Long.toString(value ? IDCConfig.Objective.DEFAULT_DAY : this.objectiveDay));
+        }
+    }
+
+    private LinearLayout objectiveDayRow() {
+        int labelWidth = WIDGET_WIDTH - NumberField.WIDTH - ROW_SPACING;
+        LinearLayout row = LinearLayout.horizontal().spacing(ROW_SPACING);
+        row.addChild(new StringWidget(labelWidth, WIDGET_HEIGHT,
+            Component.translatable("idc.config.objective.day"), this.font));
+        long initial = this.objectiveDefaultDay100 ? IDCConfig.Objective.DEFAULT_DAY : this.objectiveDay;
+        this.objectiveDayField = new NumberField(this.font,
+            Component.translatable("idc.config.objective.day"), initial);
+        this.objectiveDayField.setEditable(!this.objectiveDefaultDay100);
+        row.addChild(this.objectiveDayField);
+        return row;
     }
 
     private GridLayout buildLumenGrid() {
@@ -154,6 +197,10 @@ public final class IDCConfigScreen extends Screen {
     private void apply() {
         IDCConfig.get().sounds.enabled = this.soundsEnabled;
         IDCConfig.get().sounds.sound = this.daySound;
+        IDCConfig.get().objective.defaultDay100 = this.objectiveDefaultDay100;
+        if (!this.objectiveDefaultDay100 && this.objectiveDayField != null) {
+            IDCConfig.get().objective.day = this.objectiveDayField.value(this.objectiveDay);
+        }
         IDCConfig.get().lumen.brightness = this.lumenBrightness;
         IDCConfig.get().lumen.clearFog = this.lumenClearFog;
         IDCConfig.save();
