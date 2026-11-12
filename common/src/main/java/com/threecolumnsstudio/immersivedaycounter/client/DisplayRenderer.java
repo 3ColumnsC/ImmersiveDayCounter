@@ -24,6 +24,8 @@ public final class DisplayRenderer {
     private static final int SPECIAL_DAY_INTERVAL = 100;
     private static final float CENTER_TIME_SCALE = 1.0F;
     private static final NumberFormat DAY_FORMAT = NumberFormat.getIntegerInstance();
+    private static final int OBJECTIVE_REACHED_COLOR = 0x55FF55;
+    private static final Component OBJECTIVE_SEPARATOR = Component.literal(" | ");
 
     private static long announceStartNanos = NO_ANNOUNCE;
     private static boolean hotbarSuppressed;
@@ -52,12 +54,12 @@ public final class DisplayRenderer {
         long day = ClientDayState.day();
         double elapsed = elapsedSeconds();
 
-        renderCorner(graphics, font, config.display.corner, day, elapsed);
-        renderHotbar(graphics, font, config.display.hotbar, day, elapsed);
-        renderCenter(graphics, font, config.display.center, day, elapsed);
+        renderCorner(graphics, font, config, config.display.corner, day, elapsed);
+        renderHotbar(graphics, font, config, config.display.hotbar, day, elapsed);
+        renderCenter(graphics, font, config, config.display.center, day, elapsed);
     }
 
-    private static void renderCenter(GuiGraphicsExtractor graphics, Font font, IDCConfig.Style style, long day, double elapsed) {
+    private static void renderCenter(GuiGraphicsExtractor graphics, Font font, IDCConfig config, IDCConfig.Style style, long day, double elapsed) {
         if (!style.enabled || !isActive(style, elapsed)) {
             return;
         }
@@ -66,7 +68,11 @@ public final class DisplayRenderer {
             return;
         }
         if (style.content == IDCConfig.DisplayContent.TIME) {
-            renderCenterTime(graphics, font, style, day, alpha);
+            renderCenterTime(graphics, font, config, style, day, alpha);
+            return;
+        }
+        if (style.content == IDCConfig.DisplayContent.ONLY_OBJECTIVE) {
+            renderCenterObjective(graphics, font, config, style, day, alpha);
             return;
         }
 
@@ -74,19 +80,25 @@ public final class DisplayRenderer {
         Component dayLine = Component.literal(formatDay(day));
         boolean showTime = style.content == IDCConfig.DisplayContent.DAY_AND_TIME;
         Component timeLine = showTime ? timeLabel(style.dayTimeFormat) : null;
+        boolean showObjective = Boolean.TRUE.equals(style.showObjective);
+        Component objectiveLine = showObjective ? objectiveText(config, day) : null;
 
         float titleScale = 4.0F;
         float numberScale = 2.0F;
         float timeScale = CENTER_TIME_SCALE;
+        float objectiveScale = 1.0F;
         int gap = 2;
         int titleHeight = Math.round(font.lineHeight * titleScale);
         int numberHeight = Math.round(font.lineHeight * numberScale);
         int timeHeight = showTime ? Math.round(font.lineHeight * timeScale) : 0;
-        int blockHeight = titleHeight + gap + numberHeight + (showTime ? gap + timeHeight : 0);
+        int objectiveHeight = showObjective ? Math.round(font.lineHeight * objectiveScale) : 0;
+        int blockHeight = titleHeight + gap + numberHeight + (showTime ? gap + timeHeight : 0)
+            + (showObjective ? gap + objectiveHeight : 0);
         int blockTop = -Math.round(blockHeight / 2.0F);
         int titleWidth = font.width(title);
         int dayWidth = font.width(dayLine);
         int timeWidth = showTime ? font.width(timeLine) : 0;
+        int objectiveWidth = showObjective ? font.width(objectiveLine) : 0;
 
         int titleX = -titleWidth / 2;
         int titleY = Math.round(blockTop / titleScale);
@@ -94,6 +106,9 @@ public final class DisplayRenderer {
         int numberY = Math.round((blockTop + titleHeight + gap) / numberScale);
         int timeX = -timeWidth / 2;
         int timeY = Math.round((blockTop + titleHeight + gap + numberHeight + gap) / timeScale);
+        int objectiveX = -objectiveWidth / 2;
+        int objectiveY = Math.round((blockTop + titleHeight + gap + numberHeight
+            + (showTime ? gap + timeHeight : 0) + gap) / objectiveScale);
 
         boolean background = hasBackground(style);
         boolean shadow = !background;
@@ -106,6 +121,11 @@ public final class DisplayRenderer {
             left = Math.min(left, Math.round(timeX * timeScale));
             right = Math.max(right, Math.round((timeX + timeWidth - FONT_TRAILING_SPACING) * timeScale));
             bottom = Math.round((timeY + font.lineHeight - FONT_LINE_SLACK) * timeScale);
+        }
+        if (showObjective) {
+            left = Math.min(left, Math.round(objectiveX * objectiveScale));
+            right = Math.max(right, Math.round((objectiveX + objectiveWidth - FONT_TRAILING_SPACING) * objectiveScale));
+            bottom = Math.round((objectiveY + font.lineHeight - FONT_LINE_SLACK) * objectiveScale);
         }
         int top = Math.round(titleY * titleScale);
         if (background) {
@@ -137,13 +157,77 @@ public final class DisplayRenderer {
             graphics.pose().popMatrix();
         }
 
+        if (showObjective) {
+            graphics.pose().pushMatrix();
+            graphics.pose().scale(objectiveScale, objectiveScale);
+            graphics.text(font, objectiveLine, objectiveX, objectiveY,
+                ARGB.color(alpha, objectiveColor(style, config, day)), shadow);
+            graphics.pose().popMatrix();
+        }
+
         graphics.pose().popMatrix();
     }
 
-    private static void renderCenterTime(GuiGraphicsExtractor graphics, Font font, IDCConfig.Style style, long day, int alpha) {
+    private static void renderCenterTime(GuiGraphicsExtractor graphics, Font font, IDCConfig config,
+                                         IDCConfig.Style style, long day, int alpha) {
         Component timeLine = timeLabel(style.dayTimeFormat);
+        boolean showObjective = Boolean.TRUE.equals(style.showObjective);
+        Component objectiveLine = showObjective ? objectiveText(config, day) : null;
         float scale = 2.0F;
+        float objectiveScale = 1.0F;
+        int gap = 2;
         int width = font.width(timeLine);
+        int height = Math.round(font.lineHeight * scale);
+        int objectiveWidth = showObjective ? font.width(objectiveLine) : 0;
+        int objectiveHeight = showObjective ? Math.round(font.lineHeight * objectiveScale) : 0;
+        int blockHeight = height + (showObjective ? gap + objectiveHeight : 0);
+        int blockTop = -Math.round(blockHeight / 2.0F);
+        int x = -width / 2;
+        int y = Math.round(blockTop / scale);
+        int objectiveX = -objectiveWidth / 2;
+        int objectiveY = Math.round((blockTop + height + gap) / objectiveScale);
+        int top = Math.round(y * scale);
+        int left = Math.round(x * scale);
+        int right = Math.round((x + width - FONT_TRAILING_SPACING) * scale);
+        int bottom = Math.round((y + font.lineHeight - FONT_LINE_SLACK) * scale);
+        if (showObjective) {
+            left = Math.min(left, Math.round(objectiveX * objectiveScale));
+            right = Math.max(right, Math.round((objectiveX + objectiveWidth - FONT_TRAILING_SPACING) * objectiveScale));
+            bottom = Math.round((objectiveY + font.lineHeight - FONT_LINE_SLACK) * objectiveScale);
+        }
+        boolean background = hasBackground(style);
+        boolean shadow = !background;
+
+        graphics.nextStratum();
+        graphics.pose().pushMatrix();
+        graphics.pose().translate(graphics.guiWidth() / 2.0F, graphics.guiHeight() / 2.0F);
+
+        if (background) {
+            graphics.fill(left - PANEL_PADDING, top - PANEL_PADDING,
+                right + PANEL_PADDING, bottom + PANEL_PADDING, panelColor(alpha));
+        }
+
+        graphics.pose().pushMatrix();
+        graphics.pose().scale(scale, scale);
+        graphics.text(font, timeLine, x, y, ARGB.color(alpha, textColor(style, day)), shadow);
+        graphics.pose().popMatrix();
+
+        if (showObjective) {
+            graphics.pose().pushMatrix();
+            graphics.pose().scale(objectiveScale, objectiveScale);
+            graphics.text(font, objectiveLine, objectiveX, objectiveY,
+                ARGB.color(alpha, objectiveColor(style, config, day)), shadow);
+            graphics.pose().popMatrix();
+        }
+
+        graphics.pose().popMatrix();
+    }
+
+    private static void renderCenterObjective(GuiGraphicsExtractor graphics, Font font, IDCConfig config,
+                                              IDCConfig.Style style, long day, int alpha) {
+        Component objectiveLine = objectiveText(config, day);
+        float scale = 2.0F;
+        int width = font.width(objectiveLine);
         int height = Math.round(font.lineHeight * scale);
         int blockTop = -Math.round(height / 2.0F);
         int x = -width / 2;
@@ -166,13 +250,13 @@ public final class DisplayRenderer {
 
         graphics.pose().pushMatrix();
         graphics.pose().scale(scale, scale);
-        graphics.text(font, timeLine, x, y, ARGB.color(alpha, textColor(style, day)), shadow);
+        graphics.text(font, objectiveLine, x, y, ARGB.color(alpha, objectiveColor(style, config, day)), shadow);
         graphics.pose().popMatrix();
 
         graphics.pose().popMatrix();
     }
 
-    private static void renderHotbar(GuiGraphicsExtractor graphics, Font font, IDCConfig.Style style, long day, double elapsed) {
+    private static void renderHotbar(GuiGraphicsExtractor graphics, Font font, IDCConfig config, IDCConfig.Style style, long day, double elapsed) {
         if (!style.enabled) {
             hotbarSuppressed = false;
             hotbarRevealNanos = NO_ANNOUNCE;
@@ -194,19 +278,33 @@ public final class DisplayRenderer {
         if (alpha <= 0) {
             return;
         }
-        Component text = dayText(style, day);
-        boolean background = hasBackground(style);
-        int width = font.width(text);
+        boolean objectiveOnly = style.content == IDCConfig.DisplayContent.ONLY_OBJECTIVE;
+        Component base = dayText(config, style, day);
+        boolean appendObjective = !objectiveOnly && Boolean.TRUE.equals(style.showObjective);
+        Component objective = appendObjective ? objectiveText(config, day) : null;
+        int baseWidth = font.width(base);
+        int separatorWidth = appendObjective ? font.width(OBJECTIVE_SEPARATOR) : 0;
+        int objectiveWidth = appendObjective ? font.width(objective) : 0;
+        int width = baseWidth + separatorWidth + objectiveWidth;
         int x = graphics.guiWidth() / 2 - width / 2;
         int y = graphics.guiHeight() - 70;
+        boolean background = hasBackground(style);
+        boolean shadow = !background;
         if (background) {
             graphics.fill(x - PANEL_PADDING, y - PANEL_PADDING,
                     x + width - FONT_TRAILING_SPACING + PANEL_PADDING, y + font.lineHeight - FONT_LINE_SLACK + PANEL_PADDING, panelColor(alpha));
         }
-        graphics.text(font, text, x, y, ARGB.color(alpha, textColor(style, day)), !background);
+        int baseColor = objectiveOnly ? objectiveColor(style, config, day) : textColor(style, day);
+        graphics.text(font, base, x, y, ARGB.color(alpha, baseColor), shadow);
+        if (appendObjective) {
+            int separatorX = x + baseWidth;
+            graphics.text(font, OBJECTIVE_SEPARATOR, separatorX, y, ARGB.color(alpha, textColor(style, day)), shadow);
+            graphics.text(font, objective, separatorX + separatorWidth, y,
+                ARGB.color(alpha, objectiveColor(style, config, day)), shadow);
+        }
     }
 
-    private static void renderCorner(GuiGraphicsExtractor graphics, Font font, IDCConfig.CornerStyle style, long day, double elapsed) {
+    private static void renderCorner(GuiGraphicsExtractor graphics, Font font, IDCConfig config, IDCConfig.CornerStyle style, long day, double elapsed) {
         if (!style.enabled || !isActive(style, elapsed)) {
             return;
         }
@@ -214,19 +312,33 @@ public final class DisplayRenderer {
         if (alpha <= 0) {
             return;
         }
-        Component text = dayText(style, day);
+        boolean objectiveOnly = style.content == IDCConfig.DisplayContent.ONLY_OBJECTIVE;
+        Component base = dayText(config, style, day);
+        boolean appendObjective = !objectiveOnly && Boolean.TRUE.equals(style.showObjective);
+        Component objective = appendObjective ? objectiveText(config, day) : null;
+        int baseWidth = font.width(base);
+        int separatorWidth = appendObjective ? font.width(OBJECTIVE_SEPARATOR) : 0;
+        int objectiveWidth = appendObjective ? font.width(objective) : 0;
+        int width = baseWidth + separatorWidth + objectiveWidth;
         boolean background = hasBackground(style);
+        boolean shadow = !background;
         int margin = 5;
         boolean left = style.position == IDCConfig.Position.TOP_LEFT || style.position == IDCConfig.Position.BOTTOM_LEFT;
         boolean top = style.position == IDCConfig.Position.TOP_LEFT || style.position == IDCConfig.Position.TOP_RIGHT;
-        int width = font.width(text);
         int x = left ? margin : graphics.guiWidth() - width - margin;
         int y = top ? margin : graphics.guiHeight() - font.lineHeight - margin;
         if (background) {
             graphics.fill(x - PANEL_PADDING, y - PANEL_PADDING,
                     x + width - FONT_TRAILING_SPACING + PANEL_PADDING, y + font.lineHeight - FONT_LINE_SLACK + PANEL_PADDING, panelColor(alpha));
         }
-        graphics.text(font, text, x, y, ARGB.color(alpha, textColor(style, day)), !background);
+        int baseColor = objectiveOnly ? objectiveColor(style, config, day) : textColor(style, day);
+        graphics.text(font, base, x, y, ARGB.color(alpha, baseColor), shadow);
+        if (appendObjective) {
+            int separatorX = x + baseWidth;
+            graphics.text(font, OBJECTIVE_SEPARATOR, separatorX, y, ARGB.color(alpha, textColor(style, day)), shadow);
+            graphics.text(font, objective, separatorX + separatorWidth, y,
+                ARGB.color(alpha, objectiveColor(style, config, day)), shadow);
+        }
     }
 
     private static boolean hasBackground(IDCConfig.Style style) {
@@ -304,12 +416,25 @@ public final class DisplayRenderer {
         return DAY_FORMAT.format(day);
     }
 
-    private static Component dayText(IDCConfig.Style style, long day) {
+    private static Component objectiveText(IDCConfig config, long day) {
+        long objectiveDay = config.objective.effectiveDay();
+        if (day >= objectiveDay) {
+            return Component.translatable("idc.hud.objective.reached");
+        }
+        return Component.translatable("idc.hud.objective", formatDay(objectiveDay));
+    }
+
+    private static int objectiveColor(IDCConfig.Style style, IDCConfig config, long day) {
+        return day >= config.objective.effectiveDay() ? OBJECTIVE_REACHED_COLOR : textColor(style, day);
+    }
+
+    private static Component dayText(IDCConfig config, IDCConfig.Style style, long day) {
         Component dayOnly = Component.translatable("idc.hud.day", formatDay(day));
         return switch (style.content) {
             case DAY -> dayOnly;
             case TIME -> timeLabel(style.dayTimeFormat);
             case DAY_AND_TIME -> Component.translatable("idc.hud.day_time", dayOnly, timeLabel(style.dayTimeFormat));
+            case ONLY_OBJECTIVE -> objectiveText(config, day);
         };
     }
 

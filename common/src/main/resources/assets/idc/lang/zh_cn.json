@@ -63,5 +63,13 @@
   "idc.message.lumen.disabled": "Lumen 已禁用",
   "idc.config.tab.lumen": "Lumen",
   "idc.config.lumen.brightness": "亮度",
-  "idc.config.lumen.clear_fog": "清除雾气"
+  "idc.config.lumen.clear_fog": "清除雾气",
+  "idc.hud.objective": "目标：第 %s 天",
+  "idc.hud.objective.reached": "已达成！",
+  "commands.idc.objective.set": "目标已设置为第 %s 天",
+  "idc.config.tab.objective": "目标",
+  "idc.config.objective.default": "默认第 100 天目标",
+  "idc.config.objective.day": "目标天数",
+  "idc.config.objective.show": "显示目标",
+  "idc.config.content.only_objective": "仅目标"
 }

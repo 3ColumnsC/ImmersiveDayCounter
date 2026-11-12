@@ -63,5 +63,13 @@
   "idc.message.lumen.disabled": "Lumen disabled",
   "idc.config.tab.lumen": "Lumen",
   "idc.config.lumen.brightness": "Brightness",
-  "idc.config.lumen.clear_fog": "Clear fog"
+  "idc.config.lumen.clear_fog": "Clear fog",
+  "idc.hud.objective": "Objective: Day %s",
+  "idc.hud.objective.reached": "Reached!",
+  "commands.idc.objective.set": "Objective set to Day %s",
+  "idc.config.tab.objective": "Objective",
+  "idc.config.objective.default": "Default Day 100 Objective",
+  "idc.config.objective.day": "Objective day",
+  "idc.config.objective.show": "Show objective",
+  "idc.config.content.only_objective": "Only Objective"
 }
