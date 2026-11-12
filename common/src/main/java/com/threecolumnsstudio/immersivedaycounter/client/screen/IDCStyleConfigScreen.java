@@ -58,10 +58,13 @@ public final class IDCStyleConfigScreen extends Screen {
     private double durationSeconds;
     private double fadeSeconds;
     private boolean background;
+    private boolean showObjective;
     private String textColor;
     private boolean specialDayText;
     private String specialDayTextColor;
     private IDCConfig.DisplayContent content;
+    private CycleButton<IDCConfig.DisplayContent> contentWidget;
+    private CycleButton<Boolean> showObjectiveButton;
     private IDCConfig.DayTimeFormat dayTimeFormat;
     private IDCConfig.Position position;
 
@@ -93,6 +96,7 @@ public final class IDCStyleConfigScreen extends Screen {
         this.durationSeconds = style.durationSeconds;
         this.fadeSeconds = style.fadeSeconds;
         this.background = Boolean.TRUE.equals(style.background);
+        this.showObjective = Boolean.TRUE.equals(style.showObjective);
         this.textColor = style.textColor;
         this.specialDayText = style.specialDayText;
         this.specialDayTextColor = style.specialDayTextColor;
@@ -132,7 +136,10 @@ public final class IDCStyleConfigScreen extends Screen {
 
         GridLayout.RowHelper rows = grid.createRowHelper(1);
         rows.addChild(toggle("idc.config.enabled", this.enabled, value -> this.enabled = value));
-        rows.addChild(contentButton());
+        this.contentWidget = contentButton();
+        rows.addChild(this.contentWidget);
+        this.showObjectiveButton = toggle("idc.config.objective.show", this.showObjective, value -> this.showObjective = value);
+        rows.addChild(this.showObjectiveButton);
         rows.addChild(toggle("idc.config.permanent", this.permanent, value -> this.permanent = value));
         rows.addChild(new DoubleSlider(0, 0, WIDGET_WIDTH, WIDGET_HEIGHT, Component.translatable("idc.config.duration"),
             0.5D, 15.0D, 0.5D, this.durationSeconds, value -> this.durationSeconds = value));
@@ -148,7 +155,14 @@ public final class IDCStyleConfigScreen extends Screen {
             rows.addChild(positionButton());
         }
 
+        updateShowObjectiveState();
         return grid;
+    }
+
+    private void updateShowObjectiveState() {
+        if (this.showObjectiveButton != null) {
+            this.showObjectiveButton.active = this.content != IDCConfig.DisplayContent.ONLY_OBJECTIVE;
+        }
     }
 
     private CycleButton<Boolean> toggle(String translationKey, boolean initialValue, Consumer<Boolean> setter) {
@@ -182,7 +196,10 @@ public final class IDCStyleConfigScreen extends Screen {
                 this.content)
             .withValues(IDCConfig.DisplayContent.values())
             .create(0, 0, WIDGET_WIDTH, WIDGET_HEIGHT, Component.translatable("idc.config.content"),
-                (button, value) -> this.content = value);
+                (button, value) -> {
+                    this.content = value;
+                    updateShowObjectiveState();
+                });
     }
 
     private CycleButton<IDCConfig.DayTimeFormat> dayTimeFormatButton() {
@@ -201,6 +218,7 @@ public final class IDCStyleConfigScreen extends Screen {
         style.durationSeconds = this.durationSeconds;
         style.fadeSeconds = this.fadeSeconds;
         style.background = this.background;
+        style.showObjective = this.showObjective;
         style.textColor = this.textColor;
         style.specialDayText = this.specialDayText;
         style.specialDayTextColor = this.specialDayTextColor;

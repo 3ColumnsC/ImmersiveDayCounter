@@ -63,5 +63,13 @@
   "idc.message.lumen.disabled": "Lumen desativado",
   "idc.config.tab.lumen": "Lumen",
   "idc.config.lumen.brightness": "Brilho",
-  "idc.config.lumen.clear_fog": "Remover nevoeiro"
+  "idc.config.lumen.clear_fog": "Remover nevoeiro",
+  "idc.hud.objective": "Objetivo: Dia %s",
+  "idc.hud.objective.reached": "Alcançado!",
+  "commands.idc.objective.set": "Objetivo definido para o dia %s",
+  "idc.config.tab.objective": "Objetivo",
+  "idc.config.objective.default": "Objetivo padrão do dia 100",
+  "idc.config.objective.day": "Dia do objetivo",
+  "idc.config.objective.show": "Mostrar objetivo",
+  "idc.config.content.only_objective": "Apenas objetivo"
 }

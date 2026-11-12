@@ -63,5 +63,13 @@
   "idc.message.lumen.disabled": "Lumen отключён",
   "idc.config.tab.lumen": "Lumen",
   "idc.config.lumen.brightness": "Яркость",
-  "idc.config.lumen.clear_fog": "Убрать туман"
+  "idc.config.lumen.clear_fog": "Убрать туман",
+  "idc.hud.objective": "Цель: День %s",
+  "idc.hud.objective.reached": "Достигнуто!",
+  "commands.idc.objective.set": "Цель установлена на день %s",
+  "idc.config.tab.objective": "Цель",
+  "idc.config.objective.default": "Цель по умолчанию — день 100",
+  "idc.config.objective.day": "День цели",
+  "idc.config.objective.show": "Показывать цель",
+  "idc.config.content.only_objective": "Только цель"
 }
