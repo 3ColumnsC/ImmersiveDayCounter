@@ -24,6 +24,7 @@ public final class IDCConfig {
     public Sounds sounds = new Sounds();
     public Display display = new Display();
     public Lumen lumen = new Lumen();
+    public Objective objective = new Objective();
 
     private IDCConfig() {
     }
@@ -79,6 +80,9 @@ public final class IDCConfig {
         if (instance != null && instance.lumen != null) {
             defaults.lumen = instance.lumen;
         }
+        if (instance != null && instance.objective != null) {
+            defaults.objective = instance.objective;
+        }
         instance = defaults;
         save();
     }
@@ -124,9 +128,13 @@ public final class IDCConfig {
         if (this.lumen == null) {
             this.lumen = new Lumen();
         }
+        if (this.objective == null) {
+            this.objective = new Objective();
+        }
         this.sounds.sanitize();
         this.display.sanitize();
         this.lumen.sanitize();
+        this.objective.sanitize();
     }
 
     private static int parseColor(String value, int fallback) {
@@ -194,7 +202,9 @@ public final class IDCConfig {
         @SerializedName("time")
         TIME,
         @SerializedName("day_and_time")
-        DAY_AND_TIME
+        DAY_AND_TIME,
+        @SerializedName("only_objective")
+        ONLY_OBJECTIVE
     }
 
     public static final class Sounds {
@@ -227,20 +237,61 @@ public final class IDCConfig {
         }
     }
 
+    public static final class Objective {
+        public static final long DEFAULT_DAY = 100L;
+        public static final long MIN_DAY = 1L;
+        public static final long MAX_DAY = 1_000_000L;
+
+        public boolean defaultDay100 = true;
+        public long day = DEFAULT_DAY;
+
+        public long effectiveDay() {
+            return this.defaultDay100 ? DEFAULT_DAY : this.day;
+        }
+
+        public void setCustom(long day) {
+            this.day = clampDay(day);
+            this.defaultDay100 = false;
+        }
+
+        private void sanitize() {
+            this.day = clampDay(this.day);
+        }
+
+        private static long clampDay(long day) {
+            if (day < MIN_DAY) {
+                return MIN_DAY;
+            }
+            if (day > MAX_DAY) {
+                return MAX_DAY;
+            }
+            return day;
+        }
+    }
+
     public static final class Display {
-        public Style center = Style.create(true, false, false, DisplayContent.DAY);
-        public Style hotbar = Style.create(true, true, false, DisplayContent.DAY_AND_TIME);
-        public CornerStyle corner = CornerStyle.create(false, true, true, DisplayContent.DAY);
+        public Style center = Style.create(true, false, false, DisplayContent.DAY, Boolean.FALSE);
+        public Style hotbar = Style.create(true, true, false, DisplayContent.DAY_AND_TIME, Boolean.TRUE);
+        public CornerStyle corner = CornerStyle.create(false, true, true, DisplayContent.DAY, Boolean.FALSE);
 
         private void sanitize() {
             if (this.center == null) {
-                this.center = Style.create(true, false, false, DisplayContent.DAY);
+                this.center = Style.create(true, false, false, DisplayContent.DAY, Boolean.FALSE);
             }
             if (this.hotbar == null) {
-                this.hotbar = Style.create(true, true, false, DisplayContent.DAY_AND_TIME);
+                this.hotbar = Style.create(true, true, false, DisplayContent.DAY_AND_TIME, Boolean.TRUE);
             }
             if (this.corner == null) {
-                this.corner = CornerStyle.create(false, true, true, DisplayContent.DAY);
+                this.corner = CornerStyle.create(false, true, true, DisplayContent.DAY, Boolean.FALSE);
+            }
+            if (this.center.showObjective == null) {
+                this.center.showObjective = Boolean.FALSE;
+            }
+            if (this.hotbar.showObjective == null) {
+                this.hotbar.showObjective = Boolean.TRUE;
+            }
+            if (this.corner.showObjective == null) {
+                this.corner.showObjective = Boolean.FALSE;
             }
             this.center.sanitize();
             this.hotbar.sanitize();
@@ -254,6 +305,7 @@ public final class IDCConfig {
         public double durationSeconds;
         public double fadeSeconds;
         public Boolean background;
+        public Boolean showObjective;
         public String textColor = "#FFFFFF";
         public boolean specialDayText = true;
         public String specialDayTextColor = "#FF7A5E";
@@ -264,7 +316,7 @@ public final class IDCConfig {
         public transient int textColorRgb = DEFAULT_TEXT_COLOR;
         public transient int specialDayTextColorRgb = DEFAULT_SPECIAL_DAY_TEXT_COLOR;
 
-        private static Style create(boolean enabled, boolean permanent, boolean background, DisplayContent content) {
+        private static Style create(boolean enabled, boolean permanent, boolean background, DisplayContent content, Boolean showObjective) {
             Style style = new Style();
             style.enabled = enabled;
             style.permanent = permanent;
@@ -272,6 +324,7 @@ public final class IDCConfig {
             style.fadeSeconds = 0.6D;
             style.background = background;
             style.content = content;
+            style.showObjective = showObjective;
             return style;
         }
 
@@ -287,6 +340,9 @@ public final class IDCConfig {
             }
             if (this.background == null) {
                 this.background = Boolean.FALSE;
+            }
+            if (this.showObjective == null) {
+                this.showObjective = Boolean.FALSE;
             }
             this.textColorRgb = parseColor(this.textColor, DEFAULT_TEXT_COLOR);
             this.textColor = formatColor(this.textColorRgb);
@@ -307,7 +363,7 @@ public final class IDCConfig {
     public static final class CornerStyle extends Style {
         public Position position = Position.TOP_LEFT;
 
-        private static CornerStyle create(boolean enabled, boolean permanent, boolean background, DisplayContent content) {
+        private static CornerStyle create(boolean enabled, boolean permanent, boolean background, DisplayContent content, Boolean showObjective) {
             CornerStyle style = new CornerStyle();
             style.enabled = enabled;
             style.permanent = permanent;
@@ -315,6 +371,7 @@ public final class IDCConfig {
             style.fadeSeconds = 0.6D;
             style.background = background;
             style.content = content;
+            style.showObjective = showObjective;
             return style;
         }
 
