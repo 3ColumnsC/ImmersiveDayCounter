@@ -5,6 +5,7 @@ import com.threecolumnsstudio.immersivedaycounter.ImmersiveDayCounter;
 import com.threecolumnsstudio.immersivedaycounter.client.ClientDayState;
 import com.threecolumnsstudio.immersivedaycounter.client.DisplayRenderer;
 import com.threecolumnsstudio.immersivedaycounter.client.lumen.LumenFeature;
+import com.threecolumnsstudio.immersivedaycounter.client.screen.IDCConfigScreen;
 import com.threecolumnsstudio.immersivedaycounter.config.IDCConfig;
 import com.threecolumnsstudio.immersivedaycounter.network.DayPayload;
 import net.fabricmc.api.ClientModInitializer;
@@ -32,17 +33,21 @@ public final class IDCFabricClient implements ClientModInitializer {
                 .then(ClientCommands.literal("objective")
                     .then(ClientCommands.argument("day", LongArgumentType.longArg(IDCConfig.Objective.MIN_DAY, IDCConfig.Objective.MAX_DAY))
                         .executes(context -> setObjective(context.getSource(),
-                            LongArgumentType.getLong(context, "day")))))));
+                            LongArgumentType.getLong(context, "day")))))
+                .then(ClientCommands.literal("config")
+                    .executes(context -> openConfig()))));
 
         ClientPlayNetworking.registerGlobalReceiver(DayPayload.TYPE,
                 (payload, context) -> ClientDayState.update(payload.day(), payload.announce()));
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
             ClientDayState.reset();
             LumenFeature.reset();
+            IDCConfigScreen.cancelOpenRequest();
         });
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             IDCConfig.reloadIfChanged();
             LumenFeature.onClientTick(client);
+            IDCConfigScreen.openIfRequested();
         });
 
         HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT,
@@ -55,6 +60,11 @@ public final class IDCFabricClient implements ClientModInitializer {
         IDCConfig.get().objective.setCustom(day);
         IDCConfig.save();
         source.sendFeedback(Component.translatable("commands.idc.objective.set", day));
+        return 1;
+    }
+
+    private static int openConfig() {
+        IDCConfigScreen.requestOpen();
         return 1;
     }
 }
