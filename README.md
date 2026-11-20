@@ -94,7 +94,9 @@ A client-side objective shown in the HUD. By default it is **Day 100**. When the
 | Command | Description |
 |---|---|
 | `/idc set day n` | OP only. Sets the world day to `n` (1 to 1,000,000). |
+| `/idc set day reset` | OP only. Resets the world day to 1. |
 | `/idcclient objective n` | Client-side, no OP. Sets the objective to `n` (1 to 1,000,000). |
+| `/idcclient config` | Client-side, no OP. Opens the mod config screen. |
 
 ---
 

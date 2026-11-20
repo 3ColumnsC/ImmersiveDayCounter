@@ -4,6 +4,7 @@ import com.threecolumnsstudio.immersivedaycounter.client.IDCSounds;
 import com.threecolumnsstudio.immersivedaycounter.config.IDCConfig;
 import java.util.Locale;
 import java.util.function.Consumer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
@@ -58,6 +59,24 @@ public final class IDCConfigScreen extends Screen {
         this.objectiveDay = IDCConfig.get().objective.day;
         this.lumenBrightness = IDCConfig.get().lumen.brightness;
         this.lumenClearFog = IDCConfig.get().lumen.clearFog;
+    }
+
+    private static boolean openRequested;
+
+    public static void requestOpen() {
+        openRequested = true;
+    }
+
+    public static void openIfRequested() {
+        if (!openRequested) {
+            return;
+        }
+        openRequested = false;
+        Minecraft.getInstance().setScreen(new IDCConfigScreen(null));
+    }
+
+    public static void cancelOpenRequest() {
+        openRequested = false;
     }
 
     @Override
