@@ -59,7 +59,9 @@ public final class IDCNeoForgeClient {
             .then(Commands.literal("objective")
                 .then(Commands.argument("day", LongArgumentType.longArg(IDCConfig.Objective.MIN_DAY, IDCConfig.Objective.MAX_DAY))
                     .executes(context -> setObjective(context.getSource(),
-                        LongArgumentType.getLong(context, "day"))))));
+                        LongArgumentType.getLong(context, "day")))))
+            .then(Commands.literal("config")
+                .executes(context -> openConfig())));
     }
 
     private static int setObjective(CommandSourceStack source, long day) {
@@ -69,13 +71,20 @@ public final class IDCNeoForgeClient {
         return 1;
     }
 
+    private static int openConfig() {
+        IDCConfigScreen.requestOpen();
+        return 1;
+    }
+
     private void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
         ClientDayState.reset();
         LumenFeature.reset();
+        IDCConfigScreen.cancelOpenRequest();
     }
 
     private void onClientTick(ClientTickEvent.Post event) {
         IDCConfig.reloadIfChanged();
         LumenFeature.onClientTick(Minecraft.getInstance());
+        IDCConfigScreen.openIfRequested();
     }
 }

@@ -4,6 +4,7 @@
   "idc.hud.time": "Время %s",
   "idc.hud.day_time": "%s | %s",
   "commands.idc.set.day": "День установлен на %s",
+  "commands.idc.reset": "Счётчик дней сброшен на день 1.",
   "advancements.idc.root.title": "Immersive Day Counter",
   "advancements.idc.root.description": "Следите за течением дней.",
   "advancements.idc.day_1.title": "День 1",

@@ -4,6 +4,7 @@
   "idc.hud.time": "Hora %s",
   "idc.hud.day_time": "%s | %s",
   "commands.idc.set.day": "Dia definido para %s",
+  "commands.idc.reset": "Contador de dias reiniciado para o dia 1.",
   "advancements.idc.root.title": "Immersive Day Counter",
   "advancements.idc.root.description": "Acompanhe a passagem dos dias.",
   "advancements.idc.day_1.title": "Dia 1",

@@ -4,6 +4,7 @@
   "idc.hud.time": "時間 %s",
   "idc.hud.day_time": "%s | %s",
   "commands.idc.set.day": "%s日目に設定しました",
+  "commands.idc.reset": "日数カウンターを1日目にリセットしました。",
   "advancements.idc.root.title": "Immersive Day Counter",
   "advancements.idc.root.description": "日々の移り変わりを記録します。",
   "advancements.idc.day_1.title": "1日目",
